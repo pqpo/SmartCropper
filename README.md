@@ -9,7 +9,7 @@
 - 透视变换裁剪选区，还原裁剪区域
 
 ## 例子
-下载Demo：[传送门](art/SmartCropperSmaple.apk)
+下载Demo：[传送门](art/SmartCropperSample.apk)
 
 ### 智能选区：
 
