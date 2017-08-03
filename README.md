@@ -1,6 +1,6 @@
 # SmartCropper
 
-简单易用的智能图片裁剪库，适用于身份证，名片，文档照等裁剪。 欢迎 start，follow。
+简单易用的智能图片裁剪库，适用于身份证，名片，文档等照片的裁剪。 欢迎 start，follow。
 
 ## 支持特性
 
@@ -74,14 +74,14 @@ Bitmap crop = ivCrop.crop();
 
 ### SmartCropper 类：
 
-#### 1. 扫描边框
+#### 1. 扫描边框，大图下会比较耗时
 
 ```java
 public static Point[] scan(Bitmap srcBmp)
 ``` 
 返回值为大小为4的 Point 数组，表示选区边框的四个顶点，依次为左上，右上，右下，左下。
 
-#### 2. 根据边框顶点裁剪
+#### 2. 根据边框顶点裁剪，大图下会比较耗时
 
 ```java
 public static Bitmap crop(Bitmap srcBmp, Point[] cropPoints)
