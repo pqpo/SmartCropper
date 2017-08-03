@@ -4,9 +4,9 @@
 
 ## 支持特性
 
-- 基于 opencv 智能识别边框  
+- 使用智能算法识别图片中的边框  
 - 支持拖动锚点，手动调节选区  
-- 透视变换裁剪选区，还原裁剪区域
+- 使用透视变换裁剪并矫正选区
 
 ## 例子
 下载Demo：[传送门](art/SmartCropperSample.apk)
@@ -15,12 +15,12 @@
 
 ![](art/smart_crop.png)
 
-### 透视变换裁剪选区：
+### 透视变换裁剪并矫正选区：
 
 ![](art/cropped.png)
 
 
-### 手动调节锚点：
+### 拖动锚点，手动调节选区：
 
 ![](art/advance_crop.png)
 
@@ -68,7 +68,7 @@ ivCrop.setImageBitmap(selectedBitmap);
 ```java  
 Bitmap crop = ivCrop.crop();  
 ```  
-根据选区，使用透视变换裁剪出选区内的区域图片。
+根据选区裁剪出选区内的图片，并使用透视变换矫正。
 
 ## API 说明
 
