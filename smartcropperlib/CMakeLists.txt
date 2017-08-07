@@ -10,12 +10,7 @@ include_directories(opencv/include
 
 add_library(opencv_imgproc STATIC IMPORTED)
 add_library(opencv_core STATIC IMPORTED)
-add_library(opencv_objdetect STATIC IMPORTED)
-add_library(opencv_ml STATIC IMPORTED)
 
-
-set_target_properties(opencv_ml PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/opencv/lib/${ANDROID_ABI}/libopencv_ml.a)
-set_target_properties(opencv_objdetect PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/opencv/lib/${ANDROID_ABI}/libopencv_objdetect.a)
 set_target_properties(opencv_imgproc PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/opencv/lib/${ANDROID_ABI}/libopencv_imgproc.a)
 set_target_properties(opencv_core PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/opencv/lib/${ANDROID_ABI}/libopencv_core.a)
 
@@ -59,8 +54,6 @@ find_library(jnigraphics-lib
 
 target_link_libraries( # Specifies the target library.
                        smart_cropper
-                       opencv_ml
-                       opencv_objdetect
                        opencv_imgproc
                        opencv_core
 
