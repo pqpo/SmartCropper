@@ -7,11 +7,6 @@
 #include <Scanner.h>
 
 static const char* const kClassDocScanner = "me/pqpo/smartcropperlib/SmartCropper";
-//
-//static struct {
-//    jclass jClassArrayList;
-//    jmethodID jMethodAdd;
-//} gArrayListInfo;
 
 static struct {
     jclass jClassPoint;
@@ -21,9 +16,6 @@ static struct {
 } gPointInfo;
 
 static void initClassInfo(JNIEnv *env) {
-//    gArrayListInfo.jClassArrayList = reinterpret_cast<jclass>(env -> NewGlobalRef(env -> FindClass("java/util/ArrayList")));
-//    gArrayListInfo.jMethodAdd = env -> GetMethodID(gArrayListInfo.jClassArrayList, "add", "(Ljava/lang/Object;)Z");
-
     gPointInfo.jClassPoint = reinterpret_cast<jclass>(env -> NewGlobalRef(env -> FindClass("android/graphics/Point")));
     gPointInfo.jMethodInit = env -> GetMethodID(gPointInfo.jClassPoint, "<init>", "(II)V");
     gPointInfo.jFieldIDX = env -> GetFieldID(gPointInfo.jClassPoint, "x", "I");
@@ -33,10 +25,6 @@ static void initClassInfo(JNIEnv *env) {
 static jobject createJavaPoint(JNIEnv *env, Point point_) {
     return env -> NewObject(gPointInfo.jClassPoint, gPointInfo.jMethodInit, point_.x, point_.y);
 }
-
-//static void addToArrayList(JNIEnv *env, jobject arrayList, jobject item) {
-//    env -> CallBooleanMethod(arrayList, gArrayListInfo.jMethodAdd, item);
-//}
 
 static void native_scan(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArray outPoint_) {
     if (env -> GetArrayLength(outPoint_) != 4) {
@@ -53,12 +41,6 @@ static void native_scan(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArra
             env -> SetObjectArrayElement(outPoint_, i, createJavaPoint(env, scanPoints[i]));
         }
     }
-
-//    if(scanPoints.size() == 4) {
-//        for(Point p : scanPoints) {
-//            addToArrayList(env, outArrayList, createJavaPoint(env, p));
-//        }
-//    }
 }
 
 static vector<Point> pointsToNative(JNIEnv *env, jobjectArray points_) {

@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,14 +63,18 @@ public class CropActivity extends AppCompatActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Bitmap crop = ivCrop.crop();
-                if (crop != null) {
-                    saveImage(crop, mCroppedFile);
-                    setResult(RESULT_OK);
+                if (ivCrop.canRightCrop()) {
+                    Bitmap crop = ivCrop.crop();
+                    if (crop != null) {
+                        saveImage(crop, mCroppedFile);
+                        setResult(RESULT_OK);
+                    } else {
+                        setResult(RESULT_CANCELED);
+                    }
+                    finish();
                 } else {
-                    setResult(RESULT_CANCELED);
+                    Toast.makeText(CropActivity.this, "cannot crop correctly", Toast.LENGTH_SHORT).show();
                 }
-                finish();
             }
         });
         mFromAlbum = getIntent().getBooleanExtra(EXTRA_FROM_ALBUM, true);

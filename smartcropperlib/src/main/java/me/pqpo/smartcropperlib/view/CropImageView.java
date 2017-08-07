@@ -108,23 +108,23 @@ public class CropImageView extends ImageView {
         return bmp == null ? null : SmartCropper.crop(bmp, points);
     }
 
-//    public boolean canRightCrop() {
-//        Point lt = mCropPoints[0];
-//        Point rt = mCropPoints[1];
-//        Point rb = mCropPoints[2];
-//        Point lb = mCropPoints[3];
-//        return (pointSideLine(lt, rb, lb) * pointSideLine(lt, rb, rt) < 0) && (pointSideLine(lb, rt, lt) * pointSideLine(lb, rt, rb) < 0);
-//    }
-//
-//    private int pointSideLine(Point lineP1, Point lineP2, Point point) {
-//        int x1 = lineP1.x;
-//        int y1 = lineP1.y;
-//        int x2 = lineP2.x;
-//        int y2 = lineP2.y;
-//        int x = point.x;
-//        int y = point.y;
-//        return ((y1 - y2)*x + (x2 - x1)*y + x1 * y2 - x2 * y1);
-//    }
+    public boolean canRightCrop() {
+        Point lt = mCropPoints[0];
+        Point rt = mCropPoints[1];
+        Point rb = mCropPoints[2];
+        Point lb = mCropPoints[3];
+        return (pointSideLine(lt, rb, lb) * pointSideLine(lt, rb, rt) < 0) && (pointSideLine(lb, rt, lt) * pointSideLine(lb, rt, rb) < 0);
+    }
+
+    private long pointSideLine(Point lineP1, Point lineP2, Point point) {
+        long x1 = lineP1.x;
+        long y1 = lineP1.y;
+        long x2 = lineP2.x;
+        long y2 = lineP2.y;
+        long x = point.x;
+        long y = point.y;
+        return (x - x1)*(y2 - y1) - (y - y1)*(x2 - x1);
+    }
 
     public Bitmap getBitmap() {
         Bitmap bmp = null;
