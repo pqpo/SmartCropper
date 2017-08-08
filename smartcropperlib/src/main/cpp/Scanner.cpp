@@ -92,8 +92,6 @@ vector<Point> Scanner::selectPoints(vector<Point> points, int selectTimes) {
                 Point& lastP = *(itor - 1);
                 double pointLength = sqrt(pow((p.x-lastP.x),2) + pow((p.y-lastP.y),2));
                 if(pointLength < arc * 0.01 * selectTimes && points.size() > 4) {
-//                    lastP.x = (p.x + lastP.x)/2;
-//                    lastP.y = (p.y + lastP.y)/2;
                     itor = points.erase(itor);
                     continue;
                 }
@@ -108,54 +106,60 @@ vector<Point> Scanner::selectPoints(vector<Point> points, int selectTimes) {
 }
 
 vector<Point> Scanner::sortPointClockwise(vector<Point> points) {
-    if (points.size() == 0) {
+    if (points.size() != 4) {
         return points;
     }
-    Point *leftTop  = nullptr;
-    Point *rightBottom = nullptr;
 
-    Point *leftBottom = nullptr;
-    Point *rightTop = nullptr;
+    Point unFoundPoint;
+    vector<Point> result = {unFoundPoint, unFoundPoint, unFoundPoint, unFoundPoint};
 
-    int minDistance = -1;
-    int maxDistance = -1;
+    long minDistance = -1;
     for(Point &point : points) {
-        int distance = point.x * point.x + point.y * point.y;
+        long distance = point.x * point.x + point.y * point.y;
         if(minDistance == -1 || distance < minDistance) {
-            leftTop = &point;
+            result[0] = point;
             minDistance = distance;
         }
-        if(maxDistance == -1 || distance > maxDistance) {
-            rightBottom = &point;
-            maxDistance = distance;
+    }
+    if (result[0] != unFoundPoint) {
+        Point &leftTop = result[0];
+        points.erase(std::remove(points.begin(), points.end(), leftTop));
+        if ((pointSideLine(leftTop, points[0], points[1]) * pointSideLine(leftTop, points[0], points[2])) < 0) {
+            result[2] = points[0];
+        } else if ((pointSideLine(leftTop, points[1], points[0]) * pointSideLine(leftTop, points[1], points[2])) < 0) {
+            result[2] = points[1];
+        } else if ((pointSideLine(leftTop, points[2], points[0]) * pointSideLine(leftTop, points[2], points[1])) < 0) {
+            result[2] = points[2];
+        }
+    }
+    if (result[0] != unFoundPoint && result[2] != unFoundPoint) {
+        Point &leftTop = result[0];
+        Point &rightBottom = result[2];
+        points.erase(std::remove(points.begin(), points.end(), rightBottom));
+        if (pointSideLine(leftTop, rightBottom, points[0]) > 0) {
+            result[1] = points[0];
+            result[3] = points[1];
+        } else {
+            result[1] = points[1];
+            result[3] = points[0];
         }
     }
 
-    if (leftTop != nullptr && rightBottom != nullptr) {
-        int x1 = (*leftTop).x;
-        int y1 = (*leftTop).y;
-        int x2 = (*rightBottom).x;
-        int y2 = (*rightBottom).y;
-
-        for(Point &point : points) {
-            if (&point == leftTop || &point == rightBottom) {
-                continue;
-            }
-            int x = point.x;
-            int y = point.y;
-            if (((y1 - y2)*x + (x2 - x1)*y + x1 * y2 - x2 * y1) > 0) {
-                leftBottom = &point;
-            } else {
-                rightTop = &point;
-            }
-        }
-    }
-
-    if (leftTop != nullptr && rightBottom != nullptr && leftBottom != nullptr && rightTop != nullptr) {
-        return {*leftTop, *rightTop, *rightBottom, *leftBottom};
+    if (result[0] != unFoundPoint && result[1] != unFoundPoint && result[2] != unFoundPoint && result[3] != unFoundPoint) {
+        return result;
     }
 
     return points;
+}
+
+long long Scanner::pointSideLine(Point &lineP1, Point &lineP2, Point &point) {
+    long x1 = lineP1.x;
+    long y1 = lineP1.y;
+    long x2 = lineP2.x;
+    long y2 = lineP2.y;
+    long x = point.x;
+    long y = point.y;
+    return (x - x1)*(y2 - y1) - (y - y1)*(x2 - x1);
 }
 
 

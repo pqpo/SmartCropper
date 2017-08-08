@@ -14,6 +14,7 @@ import android.graphics.Xfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -23,6 +24,8 @@ import me.pqpo.smartcropperlib.SmartCropper;
  * Created by qiulinmin on 8/2/17.
  */
 public class CropImageView extends ImageView {
+
+    private static final String TAG = "CropImageView";
 
     private static final int TOUCH_POINT_CATCH_DISTANCE = 12;
     private static final int POINT_RADIUS = 10;
@@ -64,10 +67,24 @@ public class CropImageView extends ImageView {
     }
 
     public void setCropPoints(Point[] cropPoints) {
-        if (cropPoints == null || cropPoints.length != 4) {
-            throw new IllegalArgumentException("The length of cropPoints must be 4 , and sort by leftTop, rightTop, rightBottom, leftBottom");
+        if (getDrawable() == null) {
+            Log.w(TAG, "should call after set drawable");
+            return;
         }
-        this.mCropPoints = cropPoints;
+        if (!checkPoints(cropPoints)) {
+            setFullImgCrop();
+        } else {
+            this.mCropPoints = cropPoints;
+            invalidate();
+        }
+    }
+
+    public void setFullImgCrop() {
+        if (getDrawable() == null) {
+            Log.w(TAG, "should call after set drawable");
+            return;
+        }
+        this.mCropPoints = getFullImgCropPoints();
         invalidate();
     }
 
@@ -101,7 +118,7 @@ public class CropImageView extends ImageView {
     }
 
     public Bitmap crop(Point[] points) {
-        if (points == null || points.length != 4) {
+        if (!checkPoints(points)) {
             return null;
         }
         Bitmap bmp = getBitmap();
@@ -109,11 +126,19 @@ public class CropImageView extends ImageView {
     }
 
     public boolean canRightCrop() {
+        if (!checkPoints(mCropPoints)) {
+            return false;
+        }
         Point lt = mCropPoints[0];
         Point rt = mCropPoints[1];
         Point rb = mCropPoints[2];
         Point lb = mCropPoints[3];
         return (pointSideLine(lt, rb, lb) * pointSideLine(lt, rb, rt) < 0) && (pointSideLine(lb, rt, lt) * pointSideLine(lb, rt, rb) < 0);
+    }
+
+    public boolean checkPoints(Point[] points) {
+        return points != null && points.length == 4
+                && points[0] != null && points[1] != null && points[2] != null && points[3] != null;
     }
 
     private long pointSideLine(Point lineP1, Point lineP2, Point point) {
@@ -200,7 +225,7 @@ public class CropImageView extends ImageView {
     }
 
     private Path resetPointPath() {
-        if (mCropPoints == null || mCropPoints.length != 4) {
+        if (!checkPoints(mCropPoints)) {
             return null;
         }
         mPointLinePath.reset();
@@ -239,7 +264,7 @@ public class CropImageView extends ImageView {
     }
 
     protected void onDrawPoints(Canvas canvas) {
-        if (mCropPoints == null) {
+        if (!checkPoints(mCropPoints)) {
             return;
         }
         for (Point point : mCropPoints) {
@@ -270,7 +295,7 @@ public class CropImageView extends ImageView {
     }
 
     private Point getNearbyPoint(MotionEvent event) {
-        if (mCropPoints == null || mCropPoints.length == 0) {
+        if (!checkPoints(mCropPoints)) {
             return null;
         }
         float x = event.getX();
@@ -308,4 +333,17 @@ public class CropImageView extends ImageView {
         return (int) (dp * density + 0.5f);
     }
 
+    private Point[] getFullImgCropPoints() {
+        Point[] points = new Point[4];
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            points[0] = new Point(0, 0);
+            points[1] = new Point(width, 0);
+            points[2] = new Point(width, height);
+            points[3] = new Point(0, height);
+        }
+        return points;
+    }
 }

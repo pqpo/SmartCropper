@@ -138,8 +138,8 @@ public class CropActivity extends AppCompatActivity {
         }
         if (selectedBitmap != null) {
             Point[] points = SmartCropper.scan(selectedBitmap);
-            ivCrop.setCropPoints(points);
             ivCrop.setImageBitmap(selectedBitmap);
+            ivCrop.setCropPoints(points);
         }
     }
 
