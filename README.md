@@ -5,7 +5,7 @@
 ## 支持特性
 
 - 使用智能算法识别图片中的边框  
-- 支持拖动锚点，手动调节选区  
+- 支持拖动锚点，手动调节选区(支持放大镜效果)  
 - 使用透视变换裁剪并矫正选区
 
 ## 例子
@@ -20,7 +20,7 @@
 ![](art/cropped.png)
 
 
-### 拖动锚点，手动调节选区：
+### 拖动锚点，手动调节选区（右上角放大镜效果方便拖拽）：
 
 ![](art/advance_crop.png)
 
@@ -87,7 +87,7 @@ public static Bitmap crop(Bitmap srcBmp, Point[] cropPoints)
 
 ### CropImageView 类：
 
-#### 1. 设置裁剪边框锚点
+#### 1. 设置裁剪边框锚点,必须先设置图片
 ```java
 public void setCropPoints(Point[] cropPoints)  
 ```  
@@ -98,7 +98,7 @@ cropPoints 的大小必须为4，依次为左上，右上，右下，左下，**
 public void setMaskAlpha(int mMaskAlpha)
 ```
 
-#### 3. 设置是否显示辅助线
+#### 3. 设置是否显示辅助线,默认开启
 ```java
 public void setShowGuideLine(boolean showGuideLine)
 ```
@@ -124,11 +124,27 @@ public Bitmap crop()
 public Bitmap crop(Point[] points)
 ```
 
+#### 8. 设置开启放大镜效果,默认开启
+```java
+public void setmShowMagnifier(boolean mShowMagnifier)
+```  
+
+#### 9. 判断选区是否为凸四边形
+```java
+ public boolean canRightCrop()
+```  
+
+#### 10. 设置选区为全图,必须先设置图片
+```java
+public void setFullImgCrop()
+```  
+
+
 ## TODOS
 
 1. 优化智能选区算法
 2. ~~优化点排序算法~~
-3. CropImageView 选区放大镜效果
+3. ~~CropImageView 选区放大镜效果~~
 4. CropImageView xml属性配置
 5. ...
 
