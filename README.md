@@ -11,12 +11,9 @@
 ## 例子
 下载Demo：[传送门](art/SmartCropperSampleV5.apk)
 
-### 智能选区：
+### 智能选区，透视变换裁剪并矫正选区：
 
 ![](art/smart_crop_1.png)
-
-### 透视变换裁剪并矫正选区：
-
 ![](art/cropped_1.png)
 
 
@@ -24,9 +21,10 @@
 
 ![](art/advance_crop_1.png)
 
-### gif 动画（有点卡）：
+### gif 动画：
 
-![](art/smartcropper_1.gif)
+![](art/smartcropper_photo.gif)
+![](art/smartcropper_album.gif)
 
 
 ## 接入
