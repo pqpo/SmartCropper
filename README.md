@@ -9,24 +9,24 @@
 - 使用透视变换裁剪并矫正选区
 
 ## 例子
-下载Demo：[传送门](art/SmartCropperSample.apk)
+下载Demo：[传送门](art/SmartCropperSampleV5.apk)
 
 ### 智能选区：
 
-![](art/smart_crop.png)
+![](art/smart_crop_1.png)
 
 ### 透视变换裁剪并矫正选区：
 
-![](art/cropped.png)
+![](art/cropped_1.png)
 
 
 ### 拖动锚点，手动调节选区（右上角放大镜效果方便拖拽）：
 
-![](art/advance_crop.png)
+![](art/advance_crop_1.png)
 
 ### gif 动画（有点卡）：
 
-![](art/smartcropper.gif)
+![](art/smartcropper_1.gif)
 
 
 ## 接入
