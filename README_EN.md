@@ -21,12 +21,12 @@ A library for cropping image in a smart way that can identify the border and cor
 
 ### 2. drag anchors, magnifying glass effect to enhance the positioning experience:
 
-![](art/advance_crop_1.png)
+![](art/advance_crop_2.png)
 
 ### gif：
 
 ![](art/smartcropper_photo.gif)
-![](art/smartcropper_album.gif)
+![](art/smartcropper_album_1.gif)
 
 ## Import
 
@@ -50,23 +50,13 @@ note：
 
 note： CropImageView extends from ImageView，and ScaleType must be center type，If you set ScaleType to fit_end,fit_start,matrix will throws an error。  
 
-### 2. Intelligent constituency：    
-
-```java  
-Point[] points = SmartCropper.scan(selectedBitmap);    
-```  
-
-It will identify the border by native(c/c++), and the returned points are arrays of size 4, it's the four vertices of the selection border, sorted by the top left, top right, bottom right, bottom left.     
-
-### 3. Set the selection vertices:
+### 2. Set image to crop：    
 
 ```java
-ivCrop.setCropPoints(points);    
+ivCrop.setImageToCrop(selectedBitmap); 
 ```
 
-Returns the selection vertices of the previous step to the CropImageView drawing selection.  
-
-note：You should call after set image to ImageView(setImageBitmap(selectedBitmap))
+It will identify the border by native(c/c++), and show Image.     
 
 ### 3. Crop the image：
 
@@ -78,8 +68,8 @@ Bitmap crop = ivCrop.crop();
 
 - [x] Optimization point sorting algorithm
 - [x] CropImageView selection magnifying effect
+- [x] CropImageView xml settings
 - [ ] Optimization of intelligent selection algorithm
-- [ ] CropImageView xml settings
 - [ ] Please submit ISSUEs
 
 ---

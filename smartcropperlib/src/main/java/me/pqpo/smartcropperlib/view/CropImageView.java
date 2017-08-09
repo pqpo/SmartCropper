@@ -1,6 +1,7 @@
 package me.pqpo.smartcropperlib.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import me.pqpo.smartcropperlib.R;
 import me.pqpo.smartcropperlib.SmartCropper;
 import me.pqpo.smartcropperlib.utils.CropUtils;
 
@@ -33,11 +35,23 @@ public class CropImageView extends ImageView {
 
     private static final String TAG = "CropImageView";
 
-    private static final int TOUCH_POINT_CATCH_DISTANCE = 12;
-    private static final int POINT_RADIUS = 10;
+    private static final float TOUCH_POINT_CATCH_DISTANCE = 15; //dp
+    private static final float POINT_RADIUS = 10; // dp
+    private static final float MAGNIFIER_CROSS_LINE_WIDTH = 0.8f; //dp
+    private static final float MAGNIFIER_CROSS_LINE_LENGTH = 3; //dp
+    private static final float MAGNIFIER_BORDER_WIDTH = 1; //dp
 
-    private float[] matrixValue = new float[9];
+    private static final int DEFAULT_LINE_COLOR = 0xFF00FFFF;
+    private static final float DEFAULT_LINE_WIDTH = 1; //dp
+    private static final int DEFAULT_MASK_ALPHA = 86; // 0 - 255
+    private static final int DEFAULT_MAGNIFIER_CROSS_COLOR = 0xFFFF4081;
+    private static final float DEFAULT_GUIDE_LINE_WIDTH = 0.3f;//dp
+    private static final int DEFAULT_GUIDE_LINE_COLOR = Color.WHITE;
+    private static final int DEFAULT_POINT_FILL_COLOR = Color.WHITE;
+    private static final int DEFAULT_POINT_FILL_ALPHA = 175;
+
     private Paint mPointPaint;
+    private Paint mPointFillPaint;
     private Paint mLinePaint;
     private Paint mMaskPaint;
     private Paint mGuideLinePaint;
@@ -45,18 +59,25 @@ public class CropImageView extends ImageView {
     private Paint mMagnifierCrossPaint;
     private float mScaleX, mScaleY;
     private int mActWidth, mActHeight, mActLeft, mActTop;
-    private Xfermode mMaskXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
-    private Path mPointLinePath = new Path();
     private Point mDraggingPoint = null;
     private float mDensity;
     private ShapeDrawable mMagnifierDrawable;
+
+    private float[] mMatrixValue = new float[9];
+    private Xfermode mMaskXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+    private Path mPointLinePath = new Path();
     private Matrix mMagnifierMatrix = new Matrix();
 
     Point[] mCropPoints;
-    int mMaskAlpha = 86;
+    float mLineWidth;
+    float mGuideLineWidth;
+    int mPointFillColor = DEFAULT_POINT_FILL_COLOR;
+    int mPointFillAlpha = DEFAULT_POINT_FILL_ALPHA;
+    int mLineColor = DEFAULT_LINE_COLOR;
+    int mMagnifierCrossColor = DEFAULT_MAGNIFIER_CROSS_COLOR;
+    int mGuideLineColor = DEFAULT_GUIDE_LINE_COLOR;
+    int mMaskAlpha = DEFAULT_MASK_ALPHA; //0 - 255
     boolean mShowGuideLine = true;
-    int mLineColor = 0xFF00FFFF;
-    int mLineWidth = 1;
     boolean mShowMagnifier = true;
 
     public CropImageView(Context context) {
@@ -74,7 +95,23 @@ public class CropImageView extends ImageView {
             throw new RuntimeException("Image in CropImageView must be in center");
         }
         mDensity = getResources().getDisplayMetrics().density;
+        initAttrs(context, attrs);
         initPaints();
+    }
+
+    private void initAttrs(Context context, AttributeSet attrs) {
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CropImageView);
+        mMaskAlpha = Math.min(Math.max(0, ta.getInt(R.styleable.CropImageView_civMaskAlpha, DEFAULT_MASK_ALPHA)), 255);
+        mShowGuideLine = ta.getBoolean(R.styleable.CropImageView_civShowGuideLine, true);
+        mLineColor = ta.getColor(R.styleable.CropImageView_civLineColor, DEFAULT_LINE_COLOR);
+        mLineWidth = ta.getDimension(R.styleable.CropImageView_civLineWidth, dp2px(DEFAULT_LINE_WIDTH));
+        mMagnifierCrossColor = ta.getColor(R.styleable.CropImageView_civMagnifierCrossColor, DEFAULT_MAGNIFIER_CROSS_COLOR);
+        mShowMagnifier = ta.getBoolean(R.styleable.CropImageView_civShowMagnifier, true);
+        mGuideLineWidth = ta.getDimension(R.styleable.CropImageView_civGuideLineWidth, dp2px(DEFAULT_GUIDE_LINE_WIDTH));
+        mGuideLineColor = ta.getColor(R.styleable.CropImageView_civGuideLineColor, DEFAULT_GUIDE_LINE_COLOR);
+        mPointFillColor = ta.getColor(R.styleable.CropImageView_civPointFillColor, DEFAULT_POINT_FILL_COLOR);
+        mPointFillAlpha = Math.min(Math.max(0, ta.getInt(R.styleable.CropImageView_civPointFillAlpha, DEFAULT_POINT_FILL_ALPHA)), 255);
+        ta.recycle();
     }
 
     public void setCropPoints(Point[] cropPoints) {
@@ -105,13 +142,26 @@ public class CropImageView extends ImageView {
         mMagnifierDrawable = null;
     }
 
+    public void setImageToCrop(Bitmap bmp) {
+        setImageBitmap(bmp);
+        setCropPoints(SmartCropper.scan(bmp));
+    }
+
     public Point[] getCropPoints() {
         return mCropPoints;
     }
 
-    public void setMaskAlpha(int mMaskAlpha) {
-        mMaskAlpha = Math.min(Math.max(0, mMaskAlpha), 255);
-        this.mMaskAlpha = mMaskAlpha;
+    public void setPointFillColor(int pointFillColor) {
+        this.mPointFillColor = pointFillColor;
+    }
+
+    public void setPointFillAlpha(int pointFillAlpha) {
+        this.mPointFillAlpha = pointFillAlpha;
+    }
+
+    public void setMaskAlpha(int maskAlpha) {
+        maskAlpha = Math.min(Math.max(0, maskAlpha), 255);
+        this.mMaskAlpha = maskAlpha;
         invalidate();
     }
 
@@ -120,9 +170,21 @@ public class CropImageView extends ImageView {
         invalidate();
     }
 
+    public void setGuideLineColor(int guideLineColor) {
+        this.mGuideLineColor = guideLineColor;
+    }
+
+    public void setGuideLineWidth(float guideLineWidth) {
+        this.mGuideLineWidth = guideLineWidth;
+    }
+
     public void setLineColor(int lineColor) {
         this.mLineColor = lineColor;
         invalidate();
+    }
+
+    public void setMagnifierCrossColor(int magnifierCrossColor) {
+        this.mMagnifierCrossColor = magnifierCrossColor;
     }
 
     public void setLineWidth(int lineWidth) {
@@ -130,8 +192,8 @@ public class CropImageView extends ImageView {
         invalidate();
     }
 
-    public void setmShowMagnifier(boolean mShowMagnifier) {
-        this.mShowMagnifier = mShowMagnifier;
+    public void setShowMagnifier(boolean showMagnifier) {
+        this.mShowMagnifier = showMagnifier;
     }
 
     public Bitmap crop() {
@@ -184,12 +246,17 @@ public class CropImageView extends ImageView {
     private void initPaints() {
         mPointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPointPaint.setColor(mLineColor);
-        mPointPaint.setStrokeWidth(dp2px(mLineWidth));
+        mPointPaint.setStrokeWidth(mLineWidth);
         mPointPaint.setStyle(Paint.Style.STROKE);
+
+        mPointFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPointFillPaint.setColor(mPointFillColor);
+        mPointFillPaint.setStyle(Paint.Style.FILL);
+        mPointFillPaint.setAlpha(mPointFillAlpha);
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(mLineColor);
-        mLinePaint.setStrokeWidth(dp2px(mLineWidth));
+        mLinePaint.setStrokeWidth(mLineWidth);
         mLinePaint.setStyle(Paint.Style.STROKE);
 
         mMaskPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -197,18 +264,18 @@ public class CropImageView extends ImageView {
         mMaskPaint.setStyle(Paint.Style.FILL);
 
         mGuideLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mGuideLinePaint.setColor(Color.WHITE);
+        mGuideLinePaint.setColor(mGuideLineColor);
         mGuideLinePaint.setStyle(Paint.Style.FILL);
-        mGuideLinePaint.setStrokeWidth(1);
+        mGuideLinePaint.setStrokeWidth(mGuideLineWidth);
 
         mMagnifierPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mMagnifierPaint.setColor(Color.WHITE);
         mMagnifierPaint.setStyle(Paint.Style.FILL);
 
         mMagnifierCrossPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mMagnifierCrossPaint.setColor(mLineColor);
+        mMagnifierCrossPaint.setColor(mMagnifierCrossColor);
         mMagnifierCrossPaint.setStyle(Paint.Style.FILL);
-        mMagnifierCrossPaint.setStrokeWidth(dp2px(mLineWidth));
+        mMagnifierCrossPaint.setStrokeWidth(dp2px(MAGNIFIER_CROSS_LINE_WIDTH));
     }
 
     private void initMagnifier() {
@@ -232,8 +299,8 @@ public class CropImageView extends ImageView {
     protected void onDrawCropPoint(Canvas canvas) {
         onDrawMask(canvas);
         onDrawGuideLine(canvas);
-        onDrawPoints(canvas);
         onDrawLines(canvas);
+        onDrawPoints(canvas);
         onDrawMagnifier(canvas);
     }
 
@@ -247,7 +314,7 @@ public class CropImageView extends ImageView {
 
             float radius = getWidth() / 8;
             float cx = radius;
-            int lineOffset = dp2px(mLineWidth);
+            int lineOffset = (int) dp2px(MAGNIFIER_BORDER_WIDTH);
             mMagnifierDrawable.setBounds(lineOffset, lineOffset, (int)radius * 2 - lineOffset, (int)radius * 2 - lineOffset);
             double pointsDistance = CropUtils.getPointsDistance(draggingX, draggingY, 0, 0);
             if (pointsDistance < (radius * 2.5)) {
@@ -258,7 +325,9 @@ public class CropImageView extends ImageView {
             mMagnifierMatrix.setTranslate(radius - draggingX, radius - draggingY);
             mMagnifierDrawable.getPaint().getShader().setLocalMatrix(mMagnifierMatrix);
             mMagnifierDrawable.draw(canvas);
-            canvas.drawCircle(cx, radius, dp2px(1), mMagnifierCrossPaint);
+            float crossLength = dp2px(MAGNIFIER_CROSS_LINE_LENGTH);
+            canvas.drawLine(cx, radius - crossLength, cx, radius + crossLength, mMagnifierCrossPaint);
+            canvas.drawLine(cx - crossLength, radius, cx + crossLength, radius, mMagnifierCrossPaint);
         }
     }
 
@@ -311,9 +380,9 @@ public class CropImageView extends ImageView {
     private void getDrawablePosition() {
         Drawable drawable = getDrawable();
         if (drawable != null) {
-            getImageMatrix().getValues(matrixValue);
-            mScaleX = matrixValue[Matrix.MSCALE_X];
-            mScaleY = matrixValue[Matrix.MSCALE_Y];
+            getImageMatrix().getValues(mMatrixValue);
+            mScaleX = mMatrixValue[Matrix.MSCALE_X];
+            mScaleY = mMatrixValue[Matrix.MSCALE_Y];
             int origW = drawable.getIntrinsicWidth();
             int origH = drawable.getIntrinsicHeight();
             mActWidth = Math.round(origW * mScaleX);
@@ -335,6 +404,7 @@ public class CropImageView extends ImageView {
             return;
         }
         for (Point point : mCropPoints) {
+            canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
         }
     }
@@ -396,8 +466,8 @@ public class CropImageView extends ImageView {
         return (int) (point.y * mScaleY + mActTop);
     }
 
-    private int dp2px(float dp) {
-        return (int) (dp * mDensity + 0.5f);
+    private float dp2px(float dp) {
+        return dp * mDensity;
     }
 
     private Point[] getFullImgCropPoints() {
