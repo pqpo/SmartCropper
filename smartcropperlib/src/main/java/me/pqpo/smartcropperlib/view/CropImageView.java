@@ -35,11 +35,11 @@ public class CropImageView extends ImageView {
 
     private static final String TAG = "CropImageView";
 
-    private static final float TOUCH_POINT_CATCH_DISTANCE = 15; //dp
-    private static final float POINT_RADIUS = 10; // dp
-    private static final float MAGNIFIER_CROSS_LINE_WIDTH = 0.8f; //dp
-    private static final float MAGNIFIER_CROSS_LINE_LENGTH = 3; //dp
-    private static final float MAGNIFIER_BORDER_WIDTH = 1; //dp
+    private static final float TOUCH_POINT_CATCH_DISTANCE = 15; //dp，触摸点捕捉到锚点的最小距离
+    private static final float POINT_RADIUS = 10; // dp，锚点绘制半价
+    private static final float MAGNIFIER_CROSS_LINE_WIDTH = 0.8f; //dp，放大镜十字宽度
+    private static final float MAGNIFIER_CROSS_LINE_LENGTH = 3; //dp， 放大镜十字长度
+    private static final float MAGNIFIER_BORDER_WIDTH = 1; //dp，放大镜边框宽度
 
     private static final int DEFAULT_LINE_COLOR = 0xFF00FFFF;
     private static final float DEFAULT_LINE_WIDTH = 1; //dp
@@ -57,8 +57,8 @@ public class CropImageView extends ImageView {
     private Paint mGuideLinePaint;
     private Paint mMagnifierPaint;
     private Paint mMagnifierCrossPaint;
-    private float mScaleX, mScaleY;
-    private int mActWidth, mActHeight, mActLeft, mActTop;
+    private float mScaleX, mScaleY; // 显示的图片与实际图片缩放比
+    private int mActWidth, mActHeight, mActLeft, mActTop; //实际显示图片的位置
     private Point mDraggingPoint = null;
     private float mDensity;
     private ShapeDrawable mMagnifierDrawable;
@@ -68,17 +68,17 @@ public class CropImageView extends ImageView {
     private Path mPointLinePath = new Path();
     private Matrix mMagnifierMatrix = new Matrix();
 
-    Point[] mCropPoints;
-    float mLineWidth;
-    float mGuideLineWidth;
-    int mPointFillColor = DEFAULT_POINT_FILL_COLOR;
-    int mPointFillAlpha = DEFAULT_POINT_FILL_ALPHA;
-    int mLineColor = DEFAULT_LINE_COLOR;
-    int mMagnifierCrossColor = DEFAULT_MAGNIFIER_CROSS_COLOR;
-    int mGuideLineColor = DEFAULT_GUIDE_LINE_COLOR;
-    int mMaskAlpha = DEFAULT_MASK_ALPHA; //0 - 255
-    boolean mShowGuideLine = true;
-    boolean mShowMagnifier = true;
+    Point[] mCropPoints; // 裁剪区域
+    float mLineWidth; // 选区线的宽度
+    float mGuideLineWidth; // 辅助线宽度
+    int mPointFillColor = DEFAULT_POINT_FILL_COLOR; // 锚点内部填充颜色
+    int mPointFillAlpha = DEFAULT_POINT_FILL_ALPHA; // 锚点填充颜色透明度
+    int mLineColor = DEFAULT_LINE_COLOR; // 选区线的颜色
+    int mMagnifierCrossColor = DEFAULT_MAGNIFIER_CROSS_COLOR; // 放大镜十字颜色
+    int mGuideLineColor = DEFAULT_GUIDE_LINE_COLOR; // 辅助线颜色
+    int mMaskAlpha = DEFAULT_MASK_ALPHA; //0 - 255, 蒙版透明度
+    boolean mShowGuideLine = true; // 是否显示辅助线
+    boolean mShowMagnifier = true;// 是否显示放大镜
 
     public CropImageView(Context context) {
         this(context, null);
@@ -114,6 +114,10 @@ public class CropImageView extends ImageView {
         ta.recycle();
     }
 
+    /**
+     * 设置选区
+     * @param cropPoints 选区顶点
+     */
     public void setCropPoints(Point[] cropPoints) {
         if (getDrawable() == null) {
             Log.w(TAG, "should call after set drawable");
@@ -127,6 +131,9 @@ public class CropImageView extends ImageView {
         }
     }
 
+    /**
+     * 设置选区为包裹全图
+     */
     public void setFullImgCrop() {
         if (getDrawable() == null) {
             Log.w(TAG, "should call after set drawable");
@@ -142,64 +149,121 @@ public class CropImageView extends ImageView {
         mMagnifierDrawable = null;
     }
 
+    /**
+     * 设置待裁剪图片并显示
+     * @param bmp
+     */
     public void setImageToCrop(Bitmap bmp) {
         setImageBitmap(bmp);
         setCropPoints(SmartCropper.scan(bmp));
     }
 
+    /**
+     * 获取选区
+     * @return 选区顶点
+     */
     public Point[] getCropPoints() {
         return mCropPoints;
     }
 
+    /**
+     * 设置锚点填充颜色
+     * @param pointFillColor 颜色
+     */
     public void setPointFillColor(int pointFillColor) {
         this.mPointFillColor = pointFillColor;
     }
 
+    /**
+     * 设置锚点填充颜色透明度
+     * @param pointFillAlpha 透明度
+     */
     public void setPointFillAlpha(int pointFillAlpha) {
         this.mPointFillAlpha = pointFillAlpha;
     }
 
+    /**
+     * 蒙版透明度
+     * @param maskAlpha 透明度
+     */
     public void setMaskAlpha(int maskAlpha) {
         maskAlpha = Math.min(Math.max(0, maskAlpha), 255);
         this.mMaskAlpha = maskAlpha;
         invalidate();
     }
 
+    /**
+     * 是否显示辅助线
+     * @param showGuideLine 是否
+     */
     public void setShowGuideLine(boolean showGuideLine) {
         this.mShowGuideLine = showGuideLine;
         invalidate();
     }
 
+    /**
+     *  设置辅助线颜色
+     * @param guideLineColor 颜色
+     */
     public void setGuideLineColor(int guideLineColor) {
         this.mGuideLineColor = guideLineColor;
     }
 
+    /**
+     * 设置辅助线宽度
+     * @param guideLineWidth 宽度 px
+     */
     public void setGuideLineWidth(float guideLineWidth) {
         this.mGuideLineWidth = guideLineWidth;
     }
 
+    /**
+     * 设置选区线的颜色
+     * @param lineColor 颜色
+     */
     public void setLineColor(int lineColor) {
         this.mLineColor = lineColor;
         invalidate();
     }
 
+    /**
+     * 设置放大镜准心颜色
+     * @param magnifierCrossColor 准心颜色
+     */
     public void setMagnifierCrossColor(int magnifierCrossColor) {
         this.mMagnifierCrossColor = magnifierCrossColor;
     }
 
+    /**
+     * 设置选区线宽度
+     * @param lineWidth 线宽度，px
+     */
     public void setLineWidth(int lineWidth) {
         this.mLineWidth = lineWidth;
         invalidate();
     }
 
+    /**
+     * 设置是否显示放大镜
+     * @param showMagnifier 是否
+     */
     public void setShowMagnifier(boolean showMagnifier) {
         this.mShowMagnifier = showMagnifier;
     }
 
+    /**
+     * 裁剪
+     * @return 裁剪后的图片
+     */
     public Bitmap crop() {
         return crop(mCropPoints);
     }
 
+    /**
+     * 使用自定义选区裁剪
+     * @param points 大小为4
+     * @return 裁剪后的图片
+     */
     public Bitmap crop(Point[] points) {
         if (!checkPoints(points)) {
             return null;
@@ -208,6 +272,10 @@ public class CropImageView extends ImageView {
         return bmp == null ? null : SmartCropper.crop(bmp, points);
     }
 
+    /**
+     * 选区是否为凸四边形
+     * @return true：凸四边形
+     */
     public boolean canRightCrop() {
         if (!checkPoints(mCropPoints)) {
             return false;
@@ -292,15 +360,22 @@ public class CropImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //初始化图片位置信息
         getDrawablePosition();
+        //开始绘制选区
         onDrawCropPoint(canvas);
     }
 
     protected void onDrawCropPoint(Canvas canvas) {
+        //绘制蒙版
         onDrawMask(canvas);
+        //绘制辅助线
         onDrawGuideLine(canvas);
+        //绘制选区线
         onDrawLines(canvas);
+        //绘制锚点
         onDrawPoints(canvas);
+        //绘制放大镜
         onDrawMagnifier(canvas);
     }
 

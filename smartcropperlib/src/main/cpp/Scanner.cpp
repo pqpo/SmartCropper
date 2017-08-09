@@ -20,19 +20,26 @@ Scanner::~Scanner() {
 }
 
 vector<Point> Scanner::scanPoint() {
+    //缩小图片尺寸
     Mat image = resizeImage();
+    //预处理图片
     Mat scanImage = preprocessImage(image);
     vector<vector<Point>> contours;
+    //提取边框
     findContours(scanImage, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+    //按面积排序
     std::sort(contours.begin(), contours.end(), sortByArea);
     vector<Point> result;
     if (contours.size() > 0) {
         vector<Point> contour = contours[0];
         double arc = arcLength(contour, true);
         vector<Point> outDP;
+        //多变形逼近
         approxPolyDP(Mat(contour), outDP, 0.02*arc, true);
+        //筛选去除相近的点
         vector<Point> selectedPoints = selectPoints(outDP, 1);
         if (selectedPoints.size() != 4) {
+            //如果筛选出来之后不是四边形，那么使用最小矩形包裹
             RotatedRect rect = minAreaRect(contour);
             Point2f p[4];
             rect.points(p);
@@ -48,6 +55,7 @@ vector<Point> Scanner::scanPoint() {
             p.y *= resizeScale;
         }
     }
+    // 按左上，右上，右下，左下排序
     return sortPointClockwise(result);
 }
 

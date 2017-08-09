@@ -13,6 +13,11 @@ import me.pqpo.smartcropperlib.utils.CropUtils;
 
 public class SmartCropper {
 
+    /**
+     *  输入图片扫描边框顶点
+     * @param srcBmp 扫描图片
+     * @return 返回顶点数组，以 左上，右上，右下，左下排序
+     */
     public static Point[] scan(Bitmap srcBmp) {
         if (srcBmp == null) {
             throw new IllegalArgumentException("srcBmp cannot be null");
@@ -22,6 +27,12 @@ public class SmartCropper {
         return outPoints;
     }
 
+    /**
+     * 裁剪图片
+     * @param srcBmp 待裁剪图片
+     * @param cropPoints 裁剪区域顶点，顶点坐标以图片大小为准
+     * @return 返回裁剪后的图片
+     */
     public static Bitmap crop(Bitmap srcBmp, Point[] cropPoints) {
         if (srcBmp == null || cropPoints == null) {
             throw new IllegalArgumentException("srcBmp and cropPoints cannot be null");
