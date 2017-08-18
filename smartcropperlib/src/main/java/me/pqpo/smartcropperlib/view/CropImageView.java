@@ -151,7 +151,7 @@ public class CropImageView extends ImageView {
 
     /**
      * 设置待裁剪图片并显示
-     * @param bmp
+     * @param bmp 待裁剪图片
      */
     public void setImageToCrop(Bitmap bmp) {
         setImageBitmap(bmp);
