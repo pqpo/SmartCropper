@@ -30,7 +30,22 @@ A library for cropping image in a smart way that can identify the border and cor
 
 ## Import
 
-You can clone the project,and import smartcropperlib as a Android moudle to your project. Or import aar files.（JCenter address will be provided later）
+Step 1. Add it in your root build.gradle at the end of repositories:
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+Step 2. Add the dependency
+```
+	dependencies {
+	        compile 'com.github.pqpo:SmartCropper:V1.0.1'
+	}
+```
 
 note：
 

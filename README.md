@@ -30,9 +30,21 @@
 ![](art/smartcropper_album_1.gif)
 
 ## 接入
-
-可以直接依赖 aar 文件夹下的 aar 文件，也可以 clone 项目，将 smartcropperlib 作为 Android 模块导入。
-另外 libs 目录下是编译好的 native library，如果引入项目不想编译，可以直接使用。（JCenter 仓库地址之后提供）
+1.根目录下的 build.gradle 添加：
+```gradle
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+}
+```
+2.添加依赖
+```gradle
+dependencies {
+	  compile 'com.github.pqpo:SmartCropper:V1.0.1'
+}
+```
 
 注意：由于使用了 JNI， 请**不要混淆**  
 
