@@ -384,8 +384,8 @@ public class CropImageView extends ImageView {
             if (mMagnifierDrawable == null) {
                 initMagnifier();
             }
-            int draggingX = getViewPointX(mDraggingPoint);
-            int draggingY = getViewPointY(mDraggingPoint);
+            float draggingX = getViewPointX(mDraggingPoint);
+            float draggingY = getViewPointY(mDraggingPoint);
 
             float radius = getWidth() / 8;
             float cx = radius;
@@ -513,8 +513,8 @@ public class CropImageView extends ImageView {
         float x = event.getX();
         float y = event.getY();
         for (Point p : mCropPoints) {
-            int px = getViewPointX(p);
-            int py = getViewPointY(p);
+            float px = getViewPointX(p);
+            float py = getViewPointY(p);
             double distance =  Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2));
             if (distance < dp2px(TOUCH_POINT_CATCH_DISTANCE)) {
                 return p;
@@ -527,18 +527,98 @@ public class CropImageView extends ImageView {
         if (dragPoint == null) {
             return;
         }
-        float x = Math.min(Math.max(event.getX(), mActLeft), mActLeft + mActWidth);
-        float y = Math.min(Math.max(event.getY(), mActTop), mActTop + mActHeight);
-        dragPoint.x = (int) ((x - mActLeft) / mScaleX);
-        dragPoint.y = (int) ((y - mActTop) / mScaleY);
+        float minX = mActLeft;
+        float maxX = mActLeft + mActWidth;
+        float minY = mActTop;
+        float maxY = mActTop + mActHeight;
+
+        int pointIndex = -1;
+        for (int i = 0; i < mCropPoints.length; i++) {
+            if (dragPoint == mCropPoints[i]) {
+                pointIndex = i;
+                break;
+            }
+        }
+
+        //(y-y2)/(y1-y2) = (x-x2)/(x1-x2)
+        // y = (x-x2)/(x1-x2) * (y1-y2) + y2
+        // x = (y-y2)/(y1-y2) * (x1-x2) + x2
+        float x = getViewPointX(dragPoint.x);
+        float y = getViewPointY(dragPoint.y);
+        float x1, y1, x2, y2;
+        if (pointIndex >= 0) {
+            switch (pointIndex){
+                case 0:
+                    x1 = getViewPointX(mCropPoints[1].x);
+                    y1 = getViewPointY(mCropPoints[1].y);
+                    x2 = getViewPointX(mCropPoints[2].x);
+                    y2 = getViewPointY(mCropPoints[2].y);
+                    maxX = Math.min(maxX, (y-y2)/(y1-y2) * (x1-x2) + x2);
+                    x1 = getViewPointX(mCropPoints[2].x);
+                    y1 = getViewPointY(mCropPoints[2].y);
+                    x2 = getViewPointX(mCropPoints[3].x);
+                    y2 = getViewPointY(mCropPoints[3].y);
+                    maxY = Math.min(maxY, (x-x2)/(x1-x2) * (y1-y2) + y2);
+                    break;
+                case 1:
+                    x1 = getViewPointX(mCropPoints[0].x);
+                    y1 = getViewPointY(mCropPoints[0].y);
+                    x2 = getViewPointX(mCropPoints[3].x);
+                    y2 = getViewPointY(mCropPoints[3].y);
+                    minX = Math.max(minX, (y-y2)/(y1-y2) * (x1-x2) + x2);
+                    x1 = getViewPointX(mCropPoints[2].x);
+                    y1 = getViewPointY(mCropPoints[2].y);
+                    x2 = getViewPointX(mCropPoints[3].x);
+                    y2 = getViewPointY(mCropPoints[3].y);
+                    maxY = Math.min(maxY, ((x-x2)/(x1-x2) * (y1-y2) + y2));
+                    break;
+                case 2:
+                    x1 = getViewPointX(mCropPoints[0].x);
+                    y1 = getViewPointY(mCropPoints[0].y);
+                    x2 = getViewPointX(mCropPoints[3].x);
+                    y2 = getViewPointY(mCropPoints[3].y);
+                    minX = Math.max(minX, ((y-y2)/(y1-y2) * (x1-x2) + x2));
+                    x1 = getViewPointX(mCropPoints[0].x);
+                    y1 = getViewPointY(mCropPoints[0].y);
+                    x2 = getViewPointX(mCropPoints[1].x);
+                    y2 = getViewPointY(mCropPoints[1].y);
+                    minY = Math.max(minY, ((x-x2)/(x1-x2) * (y1-y2) + y2));
+                    break;
+                case 3:
+                    x1 = getViewPointX(mCropPoints[1].x);
+                    y1 = getViewPointY(mCropPoints[1].y);
+                    x2 = getViewPointX(mCropPoints[2].x);
+                    y2 = getViewPointY(mCropPoints[2].y);
+                    maxX = Math.min(maxX, ((y-y2)/(y1-y2) * (x1-x2) + x2));
+                    x1 = getViewPointX(mCropPoints[0].x);
+                    y1 = getViewPointY(mCropPoints[0].y);
+                    x2 = getViewPointX(mCropPoints[1].x);
+                    y2 = getViewPointY(mCropPoints[1].y);
+                    minY = Math.max(minY, ((x-x2)/(x1-x2) * (y1-y2) + y2));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        dragPoint.x = (int) ((Math.min(Math.max(event.getX(), minX), maxX) - mActLeft) / mScaleX);
+        dragPoint.y = (int) ((Math.min(Math.max(event.getY(), minY), maxY) - mActTop) / mScaleY);
     }
 
-    private int getViewPointX(Point point){
-        return (int) (point.x * mScaleX + mActLeft);
+    private float getViewPointX(Point point){
+        return getViewPointX(point.x);
     }
 
-    private int getViewPointY(Point point){
-        return (int) (point.y * mScaleY + mActTop);
+    private float getViewPointX(float x) {
+        return x * mScaleX + mActLeft;
+    }
+
+    private float getViewPointY(Point point){
+        return getViewPointY(point.y);
+    }
+
+    private float getViewPointY(float y) {
+        return y * mScaleY + mActTop;
     }
 
     private float dp2px(float dp) {
