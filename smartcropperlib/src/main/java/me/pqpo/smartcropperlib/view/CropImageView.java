@@ -80,6 +80,8 @@ public class CropImageView extends ImageView {
     boolean mShowGuideLine = true; // 是否显示辅助线
     boolean mShowMagnifier = true;// 是否显示放大镜
 
+    boolean mDragLimit = true;// 是否限制锚点拖动范围为凸四边形
+
     public CropImageView(Context context) {
         this(context, null);
     }
@@ -251,6 +253,15 @@ public class CropImageView extends ImageView {
         this.mShowMagnifier = showMagnifier;
     }
 
+
+    /**
+     * 设置是否限制拖动为凸四边形
+     * @param dragLimit 是否
+     */
+    public void setDragLimit(boolean dragLimit) {
+        this.mDragLimit = dragLimit;
+    }
+
     /**
      * 裁剪
      * @return 裁剪后的图片
@@ -293,12 +304,14 @@ public class CropImageView extends ImageView {
     }
 
     private long pointSideLine(Point lineP1, Point lineP2, Point point) {
+        return pointSideLine(lineP1, lineP2, point.x, point.y);
+    }
+
+    private long pointSideLine(Point lineP1, Point lineP2, int x, int y) {
         long x1 = lineP1.x;
         long y1 = lineP1.y;
         long x2 = lineP2.x;
         long y2 = lineP2.y;
-        long x = point.x;
-        long y = point.y;
         return (x - x1)*(y2 - y1) - (y - y1)*(x2 - x1);
     }
 
@@ -527,10 +540,6 @@ public class CropImageView extends ImageView {
         if (dragPoint == null) {
             return;
         }
-        float minX = mActLeft;
-        float maxX = mActLeft + mActWidth;
-        float minY = mActTop;
-        float maxY = mActTop + mActHeight;
 
         int pointIndex = -1;
         for (int i = 0; i < mCropPoints.length; i++) {
@@ -540,69 +549,66 @@ public class CropImageView extends ImageView {
             }
         }
 
-        //(y-y2)/(y1-y2) = (x-x2)/(x1-x2)
-        // y = (x-x2)/(x1-x2) * (y1-y2) + y2
-        // x = (y-y2)/(y1-y2) * (x1-x2) + x2
-        float x = getViewPointX(dragPoint.x);
-        float y = getViewPointY(dragPoint.y);
-        float x1, y1, x2, y2;
-        if (pointIndex >= 0) {
-            switch (pointIndex){
+        int x = (int) ((Math.min(Math.max(event.getX(), mActLeft), mActLeft + mActWidth) - mActLeft) / mScaleX);
+        int y = (int) ((Math.min(Math.max(event.getY(), mActTop), mActTop + mActHeight)- mActTop) / mScaleY);
+
+        if (mDragLimit && pointIndex >= 0) {
+            Point lt = mCropPoints[0];
+            Point rt = mCropPoints[1];
+            Point rb = mCropPoints[2];
+            Point lb = mCropPoints[3];
+            switch (pointIndex) {
                 case 0:
-                    x1 = getViewPointX(mCropPoints[1].x);
-                    y1 = getViewPointY(mCropPoints[1].y);
-                    x2 = getViewPointX(mCropPoints[2].x);
-                    y2 = getViewPointY(mCropPoints[2].y);
-                    maxX = Math.min(maxX, (y-y2)/(y1-y2) * (x1-x2) + x2);
-                    x1 = getViewPointX(mCropPoints[2].x);
-                    y1 = getViewPointY(mCropPoints[2].y);
-                    x2 = getViewPointX(mCropPoints[3].x);
-                    y2 = getViewPointY(mCropPoints[3].y);
-                    maxY = Math.min(maxY, (x-x2)/(x1-x2) * (y1-y2) + y2);
+                    if (pointSideLine(rt, lb, x, y) * pointSideLine(rt, lb, rb) > 0) {
+                        return;
+                    }
+                    if (pointSideLine(rt, rb, x, y) * pointSideLine(rt, rb, lb) < 0) {
+                        return;
+                    }
+                    if (pointSideLine(lb, rb, x, y) * pointSideLine(lb, rb, rt) < 0) {
+                        return;
+                    }
                     break;
                 case 1:
-                    x1 = getViewPointX(mCropPoints[0].x);
-                    y1 = getViewPointY(mCropPoints[0].y);
-                    x2 = getViewPointX(mCropPoints[3].x);
-                    y2 = getViewPointY(mCropPoints[3].y);
-                    minX = Math.max(minX, (y-y2)/(y1-y2) * (x1-x2) + x2);
-                    x1 = getViewPointX(mCropPoints[2].x);
-                    y1 = getViewPointY(mCropPoints[2].y);
-                    x2 = getViewPointX(mCropPoints[3].x);
-                    y2 = getViewPointY(mCropPoints[3].y);
-                    maxY = Math.min(maxY, ((x-x2)/(x1-x2) * (y1-y2) + y2));
+                    if (pointSideLine(lt, rb, x, y) * pointSideLine(lt, rb, lb) > 0) {
+                        return;
+                    }
+                    if (pointSideLine(lt, lb, x, y) * pointSideLine(lt, lb, rb) < 0) {
+                        return;
+                    }
+                    if (pointSideLine(lb, rb, x, y) * pointSideLine(lb, rb, lt) < 0) {
+                        return;
+                    }
                     break;
                 case 2:
-                    x1 = getViewPointX(mCropPoints[0].x);
-                    y1 = getViewPointY(mCropPoints[0].y);
-                    x2 = getViewPointX(mCropPoints[3].x);
-                    y2 = getViewPointY(mCropPoints[3].y);
-                    minX = Math.max(minX, ((y-y2)/(y1-y2) * (x1-x2) + x2));
-                    x1 = getViewPointX(mCropPoints[0].x);
-                    y1 = getViewPointY(mCropPoints[0].y);
-                    x2 = getViewPointX(mCropPoints[1].x);
-                    y2 = getViewPointY(mCropPoints[1].y);
-                    minY = Math.max(minY, ((x-x2)/(x1-x2) * (y1-y2) + y2));
+                    if (pointSideLine(rt, lb, x, y) * pointSideLine(rt, lb, lt) > 0) {
+                        return;
+                    }
+                    if (pointSideLine(lt, rt, x, y) * pointSideLine(lt, rt, lb) < 0) {
+                        return;
+                    }
+                    if (pointSideLine(lt, lb, x, y) * pointSideLine(lt, lb, rt) < 0) {
+                        return;
+                    }
                     break;
                 case 3:
-                    x1 = getViewPointX(mCropPoints[1].x);
-                    y1 = getViewPointY(mCropPoints[1].y);
-                    x2 = getViewPointX(mCropPoints[2].x);
-                    y2 = getViewPointY(mCropPoints[2].y);
-                    maxX = Math.min(maxX, ((y-y2)/(y1-y2) * (x1-x2) + x2));
-                    x1 = getViewPointX(mCropPoints[0].x);
-                    y1 = getViewPointY(mCropPoints[0].y);
-                    x2 = getViewPointX(mCropPoints[1].x);
-                    y2 = getViewPointY(mCropPoints[1].y);
-                    minY = Math.max(minY, ((x-x2)/(x1-x2) * (y1-y2) + y2));
+                    if (pointSideLine(lt, rb, x, y) * pointSideLine(lt, rb, rt) > 0) {
+                        return;
+                    }
+                    if (pointSideLine(lt, rt, x, y) * pointSideLine(lt, rt, rb) < 0) {
+                        return;
+                    }
+                    if (pointSideLine(rt, rb, x, y) * pointSideLine(rt, rb, lt) < 0) {
+                        return;
+                    }
                     break;
                 default:
                     break;
             }
         }
 
-        dragPoint.x = (int) ((Math.min(Math.max(event.getX(), minX), maxX) - mActLeft) / mScaleX);
-        dragPoint.y = (int) ((Math.min(Math.max(event.getY(), minY), maxY) - mActTop) / mScaleY);
+        dragPoint.x = x;
+        dragPoint.y = y;
     }
 
     private float getViewPointX(Point point){
