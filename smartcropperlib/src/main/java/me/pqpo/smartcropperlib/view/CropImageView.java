@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -70,7 +71,7 @@ public class CropImageView extends ImageView {
     private Path mPointLinePath = new Path();
     private Matrix mMagnifierMatrix = new Matrix();
 
-    Point[] mCropPoints; // 裁剪区域, 0->LeftTop, 1->RightTop， 2->LeftBottom, 3->RightBottom
+    Point[] mCropPoints; // 裁剪区域, 0->LeftTop, 1->RightTop， 2->RightBottom, 3->LeftBottom
     Point[] mEdgeMidPoints; //边中点
     float mLineWidth; // 选区线的宽度
     int mPointColor; //锚点颜色
@@ -87,6 +88,23 @@ public class CropImageView extends ImageView {
     boolean mShowEdgeMidPoint = true;//是否显示边中点
 
     boolean mDragLimit = true;// 是否限制锚点拖动范围为凸四边形
+
+    enum DragPointType{
+        LEFT_TOP,
+        RIGHT_TOP,
+        RIGHT_BOTTOM,
+        LEFT_BOTTOM,
+        TOP,
+        RIGHT,
+        BOTTOM,
+        LEFT;
+        
+        public static boolean isEdgePoint(DragPointType type){
+            return type == TOP || type == RIGHT || type == BOTTOM || type == LEFT;
+        }
+    }
+
+    private final static int P_LT = 0, P_RT = 1, P_RB = 2, P_LB = 3;
 
     public CropImageView(Context context) {
         this(context, null);
@@ -568,17 +586,25 @@ public class CropImageView extends ImageView {
         if (!checkPoints(mCropPoints)) {
             return null;
         }
-        float x = event.getX();
-        float y = event.getY();
         for (Point p : mCropPoints) {
-            float px = getViewPointX(p);
-            float py = getViewPointY(p);
-            double distance =  Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2));
-            if (distance < dp2px(TOUCH_POINT_CATCH_DISTANCE)) {
-                return p;
-            }
+            if (isTouchPoint(p, event)) return p;
+        }
+        for (Point p : mEdgeMidPoints){
+            if (isTouchPoint(p, event)) return p;
         }
         return null;
+    }
+
+    private boolean isTouchPoint(Point p, MotionEvent event){
+        float x = event.getX();
+        float y = event.getY();
+        float px = getViewPointX(p);
+        float py = getViewPointY(p);
+        double distance =  Math.sqrt(Math.pow(x - px, 2) + Math.pow(y - py, 2));
+        if (distance < dp2px(TOUCH_POINT_CATCH_DISTANCE)) {
+            return true;
+        }
+        return false;
     }
 
     private void toImagePointSize(Point dragPoint, MotionEvent event) {
@@ -586,74 +612,161 @@ public class CropImageView extends ImageView {
             return;
         }
 
-        int pointIndex = -1;
-        for (int i = 0; i < mCropPoints.length; i++) {
-            if (dragPoint == mCropPoints[i]) {
-                pointIndex = i;
-                break;
-            }
-        }
+        DragPointType pointType = getPointType(dragPoint);
 
         int x = (int) ((Math.min(Math.max(event.getX(), mActLeft), mActLeft + mActWidth) - mActLeft) / mScaleX);
-        int y = (int) ((Math.min(Math.max(event.getY(), mActTop), mActTop + mActHeight)- mActTop) / mScaleY);
+        int y = (int) ((Math.min(Math.max(event.getY(), mActTop), mActTop + mActHeight) - mActTop) / mScaleY);
 
-        if (mDragLimit && pointIndex >= 0) {
-            Point lt = mCropPoints[0];
-            Point rt = mCropPoints[1];
-            Point rb = mCropPoints[2];
-            Point lb = mCropPoints[3];
-            switch (pointIndex) {
-                case 0:
-                    if (pointSideLine(rt, lb, x, y) * pointSideLine(rt, lb, rb) > 0) {
-                        return;
-                    }
-                    if (pointSideLine(rt, rb, x, y) * pointSideLine(rt, rb, lb) < 0) {
-                        return;
-                    }
-                    if (pointSideLine(lb, rb, x, y) * pointSideLine(lb, rb, rt) < 0) {
-                        return;
-                    }
+        if (mDragLimit && pointType != null) {
+            switch (pointType) {
+                case LEFT_TOP:
+                    if (!canMoveLeftTop(x, y)) return;
                     break;
-                case 1:
-                    if (pointSideLine(lt, rb, x, y) * pointSideLine(lt, rb, lb) > 0) {
-                        return;
-                    }
-                    if (pointSideLine(lt, lb, x, y) * pointSideLine(lt, lb, rb) < 0) {
-                        return;
-                    }
-                    if (pointSideLine(lb, rb, x, y) * pointSideLine(lb, rb, lt) < 0) {
-                        return;
-                    }
+                case RIGHT_TOP:
+                    if (!canMoveRightTop(x, y)) return;
                     break;
-                case 2:
-                    if (pointSideLine(rt, lb, x, y) * pointSideLine(rt, lb, lt) > 0) {
-                        return;
-                    }
-                    if (pointSideLine(lt, rt, x, y) * pointSideLine(lt, rt, lb) < 0) {
-                        return;
-                    }
-                    if (pointSideLine(lt, lb, x, y) * pointSideLine(lt, lb, rt) < 0) {
-                        return;
-                    }
+                case RIGHT_BOTTOM:
+                    if (!canMoveRightBottom(x, y)) return;
                     break;
-                case 3:
-                    if (pointSideLine(lt, rb, x, y) * pointSideLine(lt, rb, rt) > 0) {
-                        return;
-                    }
-                    if (pointSideLine(lt, rt, x, y) * pointSideLine(lt, rt, rb) < 0) {
-                        return;
-                    }
-                    if (pointSideLine(rt, rb, x, y) * pointSideLine(rt, rb, lt) < 0) {
-                        return;
-                    }
+                case LEFT_BOTTOM:
+                    if (!canMoveLeftBottom(x, y)) return;
+                    break;
+                case TOP:
+                    if (!canMoveLeftTop(x, y) || !canMoveRightTop(x, y)) return;
+                    break;
+                case RIGHT:
+                    if (!canMoveRightTop(x, y) || !canMoveRightBottom(x, y)) return;
+                    break;
+                case BOTTOM:
+                    if (!canMoveLeftBottom(x, y) || !canMoveRightBottom(x, y)) return;
+                    break;
+                case LEFT:
+                    if (!canMoveLeftBottom(x, y) || !canMoveLeftTop(x, y)) return;
                     break;
                 default:
                     break;
             }
         }
+       
+        if (DragPointType.isEdgePoint(pointType)){
+            int xoff = x - dragPoint.x;
+            int yoff = y - dragPoint.y;
+            moveEdge(pointType, xoff, yoff);
+        } else {
+            dragPoint.y = y;
+            dragPoint.x = x;
+        }
+    }
 
-        dragPoint.x = x;
-        dragPoint.y = y;
+    private void moveEdge(DragPointType type, int xoff, int yoff){
+        switch (type){
+            case TOP:
+                movePoint(mCropPoints[P_LT], 0, yoff);
+                movePoint(mCropPoints[P_RT], 0, yoff);
+                break;
+            case RIGHT:
+                movePoint(mCropPoints[P_RT], xoff, 0);
+                movePoint(mCropPoints[P_RB], xoff, 0);
+                break;
+            case BOTTOM:
+                movePoint(mCropPoints[P_LB], 0, yoff);
+                movePoint(mCropPoints[P_RB], 0, yoff);
+                break;
+            case LEFT:
+                movePoint(mCropPoints[P_LT], xoff, 0);
+                movePoint(mCropPoints[P_LB], xoff, 0);
+                break;
+                default: break;
+        }
+    }
+    
+    private void movePoint(Point point, int xoff, int yoff){
+        if (point == null) return;
+        int x = point.x + xoff;
+        int y = point.y + yoff;
+        point.x = x;
+        point.y = y;
+    }
+
+    private boolean canMoveLeftTop(int x, int y){
+        if (pointSideLine(mCropPoints[P_RT], mCropPoints[P_LB], x, y)
+                * pointSideLine(mCropPoints[P_RT], mCropPoints[P_LB], mCropPoints[P_RB]) > 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_RT], mCropPoints[P_RB], x, y)
+                * pointSideLine(mCropPoints[P_RT], mCropPoints[P_RB], mCropPoints[P_LB]) < 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_LB], mCropPoints[P_RB], x, y)
+                * pointSideLine(mCropPoints[P_LB], mCropPoints[P_RB], mCropPoints[P_RT]) < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean canMoveRightTop(int x, int y){
+        if (pointSideLine(mCropPoints[P_LT], mCropPoints[P_RB], x, y)
+                * pointSideLine(mCropPoints[P_LT], mCropPoints[P_RB], mCropPoints[P_LB]) > 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_LT], mCropPoints[P_LB], x, y)
+                * pointSideLine(mCropPoints[P_LT], mCropPoints[P_LB], mCropPoints[P_RB]) < 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_LB], mCropPoints[P_RB], x, y)
+                * pointSideLine(mCropPoints[P_LB], mCropPoints[P_RB], mCropPoints[P_LT]) < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean canMoveRightBottom(int x, int y){
+        if (pointSideLine(mCropPoints[P_RT], mCropPoints[P_LB], x, y)
+                * pointSideLine(mCropPoints[P_RT], mCropPoints[P_LB], mCropPoints[P_LT]) > 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_LT], mCropPoints[P_RT], x, y)
+                * pointSideLine(mCropPoints[P_LT], mCropPoints[P_RT], mCropPoints[P_LB]) < 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_LT], mCropPoints[P_LB], x, y)
+                * pointSideLine(mCropPoints[P_LT], mCropPoints[P_LB], mCropPoints[P_RT]) < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean canMoveLeftBottom(int x, int y){
+        if (pointSideLine(mCropPoints[P_LT], mCropPoints[P_RB], x, y)
+                * pointSideLine(mCropPoints[P_LT], mCropPoints[P_RB], mCropPoints[P_RT]) > 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_LT], mCropPoints[P_RT], x, y)
+                * pointSideLine(mCropPoints[P_LT], mCropPoints[P_RT], mCropPoints[P_RB]) < 0) {
+            return false;
+        }
+        if (pointSideLine(mCropPoints[P_RT], mCropPoints[P_RB], x, y)
+                * pointSideLine(mCropPoints[P_RT], mCropPoints[P_RB], mCropPoints[P_LT]) < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private DragPointType getPointType(Point dragPoint){
+        DragPointType type;
+        for (int i = 0; i < mCropPoints.length; i++) {
+            if (dragPoint == mCropPoints[i]) {
+                type = DragPointType.values()[i];
+                return type;
+            }
+        }
+        for (int i = 0; i < mEdgeMidPoints.length; i++){
+            if (dragPoint == mEdgeMidPoints[i]){
+                type = DragPointType.values()[4+i];
+                return type;
+            }
+        }
+        return null;
     }
 
     private void updateMidEdgePoints(){
