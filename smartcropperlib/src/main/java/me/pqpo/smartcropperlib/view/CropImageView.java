@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import java.util.Arrays;
+
 import me.pqpo.smartcropperlib.R;
 import me.pqpo.smartcropperlib.SmartCropper;
 import me.pqpo.smartcropperlib.utils.CropUtils;
@@ -68,7 +70,8 @@ public class CropImageView extends ImageView {
     private Path mPointLinePath = new Path();
     private Matrix mMagnifierMatrix = new Matrix();
 
-    Point[] mCropPoints; // 裁剪区域
+    Point[] mCropPoints; // 裁剪区域, 0->LeftTop, 1->RightTop， 2->LeftBottom, 3->RightBottom
+    Point[] mEdgeMidPoints; //边中点
     float mLineWidth; // 选区线的宽度
     int mPointColor; //锚点颜色
     float mPointWidth; //锚点宽度
@@ -81,6 +84,7 @@ public class CropImageView extends ImageView {
     int mMaskAlpha = DEFAULT_MASK_ALPHA; //0 - 255, 蒙版透明度
     boolean mShowGuideLine = true; // 是否显示辅助线
     boolean mShowMagnifier = true;// 是否显示放大镜
+    boolean mShowEdgeMidPoint = true;//是否显示边中点
 
     boolean mDragLimit = true;// 是否限制锚点拖动范围为凸四边形
 
@@ -116,6 +120,7 @@ public class CropImageView extends ImageView {
         mGuideLineWidth = ta.getDimension(R.styleable.CropImageView_civGuideLineWidth, dp2px(DEFAULT_GUIDE_LINE_WIDTH));
         mGuideLineColor = ta.getColor(R.styleable.CropImageView_civGuideLineColor, DEFAULT_GUIDE_LINE_COLOR);
         mPointFillColor = ta.getColor(R.styleable.CropImageView_civPointFillColor, DEFAULT_POINT_FILL_COLOR);
+        mShowEdgeMidPoint = ta.getBoolean(R.styleable.CropImageView_civShowEdgeMidPoint, true);
         mPointFillAlpha = Math.min(Math.max(0, ta.getInt(R.styleable.CropImageView_civPointFillAlpha, DEFAULT_POINT_FILL_ALPHA)), 255);
         ta.recycle();
     }
@@ -134,6 +139,23 @@ public class CropImageView extends ImageView {
         } else {
             this.mCropPoints = cropPoints;
             invalidate();
+        }
+    }
+
+    public void setEdgeMidPoints(){
+        if (mEdgeMidPoints == null){
+            mEdgeMidPoints = new Point[4];
+            for (int i = 0; i < mEdgeMidPoints.length; i++){
+                mEdgeMidPoints[i] = new Point();
+            }
+        }
+        if (!checkPoints(mCropPoints)) {
+            setFullImgCrop();
+        }
+        int len = mCropPoints.length;
+        for (int i = 0; i < len; i++){
+            mEdgeMidPoints[i].set(mCropPoints[i].x + (mCropPoints[(i+1)%len].x - mCropPoints[i].x)/2,
+                                    mCropPoints[i].y + (mCropPoints[(i+1)%len].y - mCropPoints[i].y)/2);
         }
     }
 
@@ -162,6 +184,9 @@ public class CropImageView extends ImageView {
     public void setImageToCrop(Bitmap bmp) {
         setImageBitmap(bmp);
         setCropPoints(SmartCropper.scan(bmp));
+        if (mShowEdgeMidPoint){
+            setEdgeMidPoints();
+        }
     }
 
     /**
@@ -509,6 +534,11 @@ public class CropImageView extends ImageView {
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
         }
+        //边锚点
+        for (Point point : mEdgeMidPoints){
+            canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
+            canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
+        }
     }
 
     @Override
@@ -524,6 +554,7 @@ public class CropImageView extends ImageView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 toImagePointSize(mDraggingPoint, event);
+                updateMidEdgePoints();
                 break;
             case MotionEvent.ACTION_UP:
                 mDraggingPoint = null;
@@ -623,6 +654,12 @@ public class CropImageView extends ImageView {
 
         dragPoint.x = x;
         dragPoint.y = y;
+    }
+
+    private void updateMidEdgePoints(){
+        if (mShowEdgeMidPoint){
+            setEdgeMidPoints();
+        }
     }
 
     private float getViewPointX(Point point){

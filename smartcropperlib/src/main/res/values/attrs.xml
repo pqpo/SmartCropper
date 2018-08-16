@@ -14,6 +14,7 @@
         <attr name="civPointFillAlpha" format="integer"/>
         <attr name="civPointColor" format="color"/>
         <attr name="civPointWidth" format="dimension"/>
+        <attr name="civShowEdgeMidPoint" format="boolean"/>
     </declare-styleable>
 
 </resources>
