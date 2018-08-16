@@ -684,6 +684,8 @@ public class CropImageView extends ImageView {
         if (point == null) return;
         int x = point.x + xoff;
         int y = point.y + yoff;
+        if (x < 0 || x > getDrawable().getIntrinsicWidth()) return;
+        if (y < 0 || y > getDrawable().getIntrinsicHeight()) return;
         point.x = x;
         point.y = y;
     }
