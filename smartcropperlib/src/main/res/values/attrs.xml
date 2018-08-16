@@ -12,6 +12,8 @@
         <attr name="civGuideLineColor" format="color"/>
         <attr name="civPointFillColor" format="color"/>
         <attr name="civPointFillAlpha" format="integer"/>
+        <attr name="civPointColor" format="color"/>
+        <attr name="civPointWidth" format="dimension"/>
     </declare-styleable>
 
 </resources>

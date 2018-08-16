@@ -70,6 +70,8 @@ public class CropImageView extends ImageView {
 
     Point[] mCropPoints; // 裁剪区域
     float mLineWidth; // 选区线的宽度
+    int mPointColor; //锚点颜色
+    float mPointWidth; //锚点宽度
     float mGuideLineWidth; // 辅助线宽度
     int mPointFillColor = DEFAULT_POINT_FILL_COLOR; // 锚点内部填充颜色
     int mPointFillAlpha = DEFAULT_POINT_FILL_ALPHA; // 锚点填充颜色透明度
@@ -107,6 +109,8 @@ public class CropImageView extends ImageView {
         mShowGuideLine = ta.getBoolean(R.styleable.CropImageView_civShowGuideLine, true);
         mLineColor = ta.getColor(R.styleable.CropImageView_civLineColor, DEFAULT_LINE_COLOR);
         mLineWidth = ta.getDimension(R.styleable.CropImageView_civLineWidth, dp2px(DEFAULT_LINE_WIDTH));
+        mPointColor = ta.getColor(R.styleable.CropImageView_civPointColor, DEFAULT_LINE_COLOR);
+        mPointWidth = ta.getDimension(R.styleable.CropImageView_civPointWidth, dp2px(DEFAULT_LINE_WIDTH));
         mMagnifierCrossColor = ta.getColor(R.styleable.CropImageView_civMagnifierCrossColor, DEFAULT_MAGNIFIER_CROSS_COLOR);
         mShowMagnifier = ta.getBoolean(R.styleable.CropImageView_civShowMagnifier, true);
         mGuideLineWidth = ta.getDimension(R.styleable.CropImageView_civGuideLineWidth, dp2px(DEFAULT_GUIDE_LINE_WIDTH));
@@ -245,6 +249,16 @@ public class CropImageView extends ImageView {
         invalidate();
     }
 
+    public void setPointColor(int pointColor) {
+        this.mPointColor = pointColor;
+        invalidate();
+    }
+
+    public void setPointWidth(float pointWidth) {
+        this.mPointWidth = pointWidth;
+        invalidate();
+    }
+
     /**
      * 设置是否显示放大镜
      * @param showMagnifier 是否
@@ -326,8 +340,8 @@ public class CropImageView extends ImageView {
 
     private void initPaints() {
         mPointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPointPaint.setColor(mLineColor);
-        mPointPaint.setStrokeWidth(mLineWidth);
+        mPointPaint.setColor(mPointColor);
+        mPointPaint.setStrokeWidth(mPointWidth);
         mPointPaint.setStyle(Paint.Style.STROKE);
 
         mPointFillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
