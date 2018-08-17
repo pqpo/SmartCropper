@@ -188,6 +188,7 @@ public class CropImageView extends ImageView {
             return;
         }
         this.mCropPoints = getFullImgCropPoints();
+        setEdgeMidPoints();
         invalidate();
     }
 
