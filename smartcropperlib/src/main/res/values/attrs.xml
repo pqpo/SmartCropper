@@ -15,6 +15,7 @@
         <attr name="civPointColor" format="color"/>
         <attr name="civPointWidth" format="dimension"/>
         <attr name="civShowEdgeMidPoint" format="boolean"/>
+        <attr name="civAutoScanEnable" format="boolean"/>
     </declare-styleable>
 
 </resources>
