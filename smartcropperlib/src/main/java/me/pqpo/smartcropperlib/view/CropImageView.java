@@ -448,7 +448,38 @@ public class CropImageView extends ImageView {
         //绘制锚点
         onDrawPoints(canvas);
         //绘制放大镜
-        onDrawMagnifier(canvas);
+        onDrawCusMagnifier(canvas);
+    }
+
+    protected void onDrawCusMagnifier(Canvas canvas){
+        DragPointType pointType = getPointType(mDraggingPoint);
+        if (pointType == null || DragPointType.isEdgePoint(pointType)){
+            return;
+        }
+
+        if (mShowMagnifier && mDraggingPoint != null) {
+            if (mMagnifierDrawable == null) {
+                initMagnifier();
+            }
+            float draggingX = getViewPointX(mDraggingPoint);
+            float draggingY = getViewPointY(mDraggingPoint);
+            float radius = getWidth() / 8;
+            float cx = radius; //圆心x坐标
+            int lineOffset = (int) dp2px(MAGNIFIER_BORDER_WIDTH);
+            if (0 <= mDraggingPoint.x && mDraggingPoint.x < getDrawable().getIntrinsicWidth() / 2){ //拉伸点在左侧时，放大镜显示在右侧
+                mMagnifierDrawable.setBounds(getWidth() - (int)radius * 2 + lineOffset, lineOffset, getWidth() - lineOffset, (int)radius * 2 - lineOffset);
+                cx = getWidth() - radius;
+            } else {
+                mMagnifierDrawable.setBounds(lineOffset, lineOffset, (int)radius * 2 - lineOffset, (int)radius * 2 - lineOffset);
+            }
+            canvas.drawCircle(cx, radius, radius, mMagnifierPaint);
+            mMagnifierMatrix.setTranslate(radius - draggingX, radius - draggingY);
+            mMagnifierDrawable.getPaint().getShader().setLocalMatrix(mMagnifierMatrix);
+            mMagnifierDrawable.draw(canvas);
+            //放大镜锚点
+            canvas.drawCircle(cx, radius, dp2px(POINT_RADIUS), mPointFillPaint);
+            canvas.drawCircle(cx, radius, dp2px(POINT_RADIUS), mPointPaint);
+        }
     }
 
     protected void onDrawMagnifier(Canvas canvas) {
@@ -757,6 +788,8 @@ public class CropImageView extends ImageView {
     }
 
     private DragPointType getPointType(Point dragPoint){
+        if (mCropPoints == null || mEdgeMidPoints == null || dragPoint == null ) return null;
+
         DragPointType type;
         for (int i = 0; i < mCropPoints.length; i++) {
             if (dragPoint == mCropPoints[i]) {
