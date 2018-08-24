@@ -4,6 +4,8 @@
 
 简单易用的智能图片裁剪库，适用于身份证，名片，文档等照片的裁剪。 如果觉得还不错，欢迎 start，fork。
 
+你也可以关注我的另一个库 [SmartCamera](https://github.com/pqpo/SmartCamera)： SmartCamera 是一个 Android 相机拓展库，能够实时采集并且识别相机内物体边框是否吻合指定区域。
+
 ## 支持特性
 
 - 使用智能算法(基于opencv)识别图片中的边框  
@@ -12,8 +14,6 @@
 - 支持丰富的UI设置，如辅助线，蒙版，锚点，放大镜等
 
 ## 例子（[传送门](art/SmartCropperSampleV5.apk)）
-
-![](art/download_qr.png)
 
 ### 1. 选择图片后智能选区，使用透视变换裁剪并矫正选区：
 
