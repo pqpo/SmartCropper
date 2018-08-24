@@ -2,7 +2,7 @@
 
 ## English | [中文](README.md)
 
-A library for cropping image in a smart way that can identify the border and correct the cropped image. Applicable to ID cards, business cards, documents and other photos of the crop. If you like, welcome start, fork or follow me.
+A library for cropping image in a smart way that can identify the border and correct the cropped image. Applicable to ID cards, business cards, documents and other photos of the crop. If you like, welcome star, fork or follow me.
 
 
 ## Features
