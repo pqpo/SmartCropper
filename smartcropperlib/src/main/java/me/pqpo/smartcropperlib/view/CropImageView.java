@@ -86,7 +86,7 @@ public class CropImageView extends ImageView {
     boolean mShowGuideLine = true; // 是否显示辅助线
     boolean mShowMagnifier = true;// 是否显示放大镜
     boolean mShowEdgeMidPoint = true;//是否显示边中点
-    boolean mAutoScanEnable = false;//是否进行自动识别边框
+    boolean mAutoScanEnable = true;//是否进行自动识别边框
 
     boolean mDragLimit = true;// 是否限制锚点拖动范围为凸四边形
 
@@ -140,9 +140,16 @@ public class CropImageView extends ImageView {
         mGuideLineColor = ta.getColor(R.styleable.CropImageView_civGuideLineColor, DEFAULT_GUIDE_LINE_COLOR);
         mPointFillColor = ta.getColor(R.styleable.CropImageView_civPointFillColor, DEFAULT_POINT_FILL_COLOR);
         mShowEdgeMidPoint = ta.getBoolean(R.styleable.CropImageView_civShowEdgeMidPoint, true);
-        mAutoScanEnable = ta.getBoolean(R.styleable.CropImageView_civAutoScanEnable, false);
+        mAutoScanEnable = ta.getBoolean(R.styleable.CropImageView_civAutoScanEnable, true);
         mPointFillAlpha = Math.min(Math.max(0, ta.getInt(R.styleable.CropImageView_civPointFillAlpha, DEFAULT_POINT_FILL_ALPHA)), 255);
         ta.recycle();
+    }
+
+    /**
+     * 是否自动裁剪
+     */
+    public void setAutoScanEnable(boolean mAutoScanEnable) {
+        this.mAutoScanEnable = mAutoScanEnable;
     }
 
     /**
@@ -449,7 +456,8 @@ public class CropImageView extends ImageView {
         //绘制锚点
         onDrawPoints(canvas);
         //绘制放大镜
-        onDrawCusMagnifier(canvas);
+        onDrawMagnifier(canvas);
+//        onDrawCusMagnifier(canvas);
     }
 
     protected void onDrawCusMagnifier(Canvas canvas){
