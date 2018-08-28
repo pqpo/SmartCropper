@@ -16,6 +16,7 @@ android {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions -lz"
                 abiFilters 'armeabi', 'armeabi-v7a', 'mips', 'x86'
+                arguments '-DANDROID_STL=gnustl_shared'
             }
         }
 
