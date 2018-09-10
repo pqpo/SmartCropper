@@ -13,7 +13,7 @@
 - 使用透视变换裁剪并矫正选区，还原正面图片
 - 支持丰富的UI设置，如辅助线，蒙版，锚点，放大镜等
 
-## 例子（[传送门](art/SmartCropperSampleV5.apk)）
+## 例子（[传送门](art/SmartCropperSampleV6.apk)）
 
 ### 1. 选择图片后智能选区，使用透视变换裁剪并矫正选区：
 
@@ -42,7 +42,7 @@ allprojects {
 2.添加依赖
 ```gradle
 dependencies {
-	  compile 'com.github.pqpo:SmartCropper:v1.1.3@aar'
+	  compile 'com.github.pqpo:SmartCropper:v1.2.0@aar'
 }
 ```
 

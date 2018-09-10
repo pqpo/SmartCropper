@@ -12,7 +12,7 @@ A library for cropping image in a smart way that can identify the border and cor
 - Use the perspective transform to crop and correct the selection to restore the front image.
 - Support rich UI settings, such as auxiliary lines, mask, anchor, magnifying glass and so on.
 
-## Sample（[link](art/SmartCropperSampleV5.apk)）
+## Sample（[link](art/SmartCropperSampleV6.apk)）
 
 ### 1. Select a image, use the perspective transform to crop and correct the selection:
 
@@ -43,7 +43,7 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 ```
 	dependencies {
-	        compile 'com.github.pqpo:SmartCropper:v1.1.3@aar'
+	        compile 'com.github.pqpo:SmartCropper:v1.2.0@aar'
 	}
 ```
 
