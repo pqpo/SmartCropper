@@ -20,11 +20,15 @@ namespace scanner{
         cv::Mat srcBitmap;
         float resizeScale = 1.0f;
 
+        bool isHisEqual = false;
+
         cv::Mat resizeImage();
 
-        cv::Mat preprocessImage(cv::Mat& image);
+        cv::Mat preprocessedImage(cv::Mat &image, int cannyValue, int blurValue);
 
-        std::vector<cv::Point> selectPoints(std::vector<cv::Point> points, int selectTimes);
+        cv::Point choosePoint(cv::Point center, std::vector<cv::Point> &points, int type);
+
+        std::vector<cv::Point> selectPoints(std::vector<cv::Point> points);
 
         std::vector<cv::Point> sortPointClockwise(std::vector<cv::Point> vector);
 
