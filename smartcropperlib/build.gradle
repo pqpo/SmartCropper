@@ -9,14 +9,14 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 5
-        versionName "1.2.0"
+        versionCode 6
+        versionName "1.2.1"
 
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions -lz"
                 abiFilters 'armeabi', 'armeabi-v7a', 'mips', 'x86'
-                arguments '-DANDROID_STL=gnustl_shared'
+//                arguments '-DANDROID_STL=gnustl_shared'
             }
         }
 
