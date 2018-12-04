@@ -9,7 +9,7 @@ android {
         versionCode 2
         versionName "1.1"
         ndk {
-            abiFilters 'armeabi','armeabi-v7a'
+            abiFilters 'armeabi-v7a', "arm64-v8a", 'x86'
         }
     }
     buildTypes {
