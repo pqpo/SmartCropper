@@ -3,12 +3,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.pqpo'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 8
         versionName "1.2.3"
 
