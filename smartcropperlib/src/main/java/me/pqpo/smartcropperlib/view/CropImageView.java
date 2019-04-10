@@ -595,6 +595,10 @@ public class CropImageView extends ImageView {
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
         }
         //边锚点
+        if(!mShowEdgeMidPoint){
+            return;
+        }
+
         for (Point point : mEdgeMidPoints){
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
@@ -630,6 +634,9 @@ public class CropImageView extends ImageView {
         }
         for (Point p : mCropPoints) {
             if (isTouchPoint(p, event)) return p;
+        }
+        if(!mShowEdgeMidPoint){
+            return null;
         }
         for (Point p : mEdgeMidPoints){
             if (isTouchPoint(p, event)) return p;

@@ -1,5 +1,6 @@
 package me.pqpo.smartcropper;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +9,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -20,11 +23,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import me.pqpo.smartcropperlib.SmartCropper;
 import me.pqpo.smartcropperlib.view.CropImageView;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class CropActivity extends AppCompatActivity {
+public class CropActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
 
     private static final String EXTRA_FROM_ALBUM = "extra_from_album";
     private static final String EXTRA_CROPPED_FILE = "extra_cropped_file";
@@ -87,8 +92,36 @@ public class CropActivity extends AppCompatActivity {
         }
 
         tempFile = new File(getExternalFilesDir("img"), "temp.jpg");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            EasyPermissions.requestPermissions(
+                    CropActivity.this,
+                    "申请权限",
+                    0,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA);
+        }else{
+            selectPhoto();
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> list) {
+        // Some permissions have been granted
+        // ...
         selectPhoto();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> list) {
+        // Some permissions have been denied
+        // ...
     }
 
     private void selectPhoto() {
@@ -100,7 +133,13 @@ public class CropActivity extends AppCompatActivity {
             }
         } else {
             Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                uri = FileProvider.getUriForFile(this, "me.pqpo.smartcropper.fileProvider", tempFile);
+            } else {
+                uri = Uri.fromFile(tempFile);
+            }
+            startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             if (startCameraIntent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(startCameraIntent, REQUEST_CODE_TAKE_PHOTO);
             }
