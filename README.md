@@ -30,6 +30,13 @@
 ![](art/smartcropper_album_1.gif)
 
 ## 接入
+
+### 1.2.4 及以上版本需要通过aar包的形式引入：
+
+下载地址：https://github.com/pqpo/SmartCropper/releases
+
+### 1.2.3 及以下版本：
+
 1.根目录下的 build.gradle 添加：
 ```gradle
 allprojects {
@@ -42,7 +49,7 @@ allprojects {
 2.添加依赖
 ```gradle
 dependencies {
-	  compile 'com.github.pqpo:SmartCropper:v1.2.4'
+	  compile 'com.github.pqpo:SmartCropper:v1.2.3'
 }
 ```
 

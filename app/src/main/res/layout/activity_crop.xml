@@ -13,6 +13,7 @@
         android:padding="20dp"
         android:layout_height="0dp"
         android:layout_weight="1"
+        app:civShowEdgeMidPoint="true"
         app:civLineColor="@color/colorPrimary"
         app:civMagnifierCrossColor="@color/colorPrimaryDark"/>
 

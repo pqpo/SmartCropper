@@ -176,9 +176,6 @@ public class CropImageView extends ImageView {
                 mEdgeMidPoints[i] = new Point();
             }
         }
-        if (!checkPoints(mCropPoints)) {
-            setFullImgCrop();
-        }
         int len = mCropPoints.length;
         for (int i = 0; i < len; i++){
             mEdgeMidPoints[i].set(mCropPoints[i].x + (mCropPoints[(i+1)%len].x - mCropPoints[i].x)/2,
@@ -195,7 +192,6 @@ public class CropImageView extends ImageView {
             return;
         }
         this.mCropPoints = getFullImgCropPoints();
-        setEdgeMidPoints();
         invalidate();
     }
 
@@ -212,9 +208,6 @@ public class CropImageView extends ImageView {
     public void setImageToCrop(Bitmap bmp) {
         setImageBitmap(bmp);
         setCropPoints(mAutoScanEnable ? SmartCropper.scan(bmp) : null);
-        if (mShowEdgeMidPoint){
-            setEdgeMidPoints();
-        }
     }
 
     /**
@@ -594,10 +587,13 @@ public class CropImageView extends ImageView {
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
             canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
         }
-        //边锚点
-        for (Point point : mEdgeMidPoints){
-            canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
-            canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
+        if (mShowEdgeMidPoint) {
+            setEdgeMidPoints();
+            //中间锚点
+            for (Point point : mEdgeMidPoints){
+                canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointFillPaint);
+                canvas.drawCircle(getViewPointX(point), getViewPointY(point), dp2px(POINT_RADIUS), mPointPaint);
+            }
         }
     }
 
@@ -614,7 +610,6 @@ public class CropImageView extends ImageView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 toImagePointSize(mDraggingPoint, event);
-                updateMidEdgePoints();
                 break;
             case MotionEvent.ACTION_UP:
                 mDraggingPoint = null;
@@ -625,14 +620,15 @@ public class CropImageView extends ImageView {
     }
 
     private Point getNearbyPoint(MotionEvent event) {
-        if (!checkPoints(mCropPoints)) {
-            return null;
+        if (checkPoints(mCropPoints)) {
+            for (Point p : mCropPoints) {
+                if (isTouchPoint(p, event)) return p;
+            }
         }
-        for (Point p : mCropPoints) {
-            if (isTouchPoint(p, event)) return p;
-        }
-        for (Point p : mEdgeMidPoints){
-            if (isTouchPoint(p, event)) return p;
+        if (checkPoints(mEdgeMidPoints)) {
+            for (Point p : mEdgeMidPoints){
+                if (isTouchPoint(p, event)) return p;
+            }
         }
         return null;
     }
@@ -797,28 +793,26 @@ public class CropImageView extends ImageView {
     }
 
     private DragPointType getPointType(Point dragPoint){
-        if (mCropPoints == null || mEdgeMidPoints == null || dragPoint == null ) return null;
+        if (dragPoint == null) return null;
 
         DragPointType type;
-        for (int i = 0; i < mCropPoints.length; i++) {
-            if (dragPoint == mCropPoints[i]) {
-                type = DragPointType.values()[i];
-                return type;
+        if (checkPoints(mCropPoints)) {
+            for (int i = 0; i < mCropPoints.length; i++) {
+                if (dragPoint == mCropPoints[i]) {
+                    type = DragPointType.values()[i];
+                    return type;
+                }
             }
         }
-        for (int i = 0; i < mEdgeMidPoints.length; i++){
-            if (dragPoint == mEdgeMidPoints[i]){
-                type = DragPointType.values()[4+i];
-                return type;
+        if (checkPoints(mEdgeMidPoints)) {
+            for (int i = 0; i < mEdgeMidPoints.length; i++){
+                if (dragPoint == mEdgeMidPoints[i]){
+                    type = DragPointType.values()[4+i];
+                    return type;
+                }
             }
         }
         return null;
-    }
-
-    private void updateMidEdgePoints(){
-        if (mShowEdgeMidPoint){
-            setEdgeMidPoints();
-        }
     }
 
     private float getViewPointX(Point point){
