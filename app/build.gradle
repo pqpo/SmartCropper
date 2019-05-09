@@ -28,5 +28,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
-//    implementation 'com.github.pqpo:SmartCropper:v1.2.3'
+    // For developers using AndroidX in their applications
+    //implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // For developers using the Android Support Library
+    implementation 'pub.devrel:easypermissions:2.0.1'
+    //    compile 'com.github.pqpo:SmartCropper:v1.2.3'
 }
