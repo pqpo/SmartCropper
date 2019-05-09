@@ -31,6 +31,12 @@ You can also follow my other library [SmartCamera](https://github.com/pqpo/Smart
 
 ## Import
 
+if version >= v1.2.4:
+
+aar download: https://github.com/pqpo/SmartCropper/releases
+
+else:
+
 Step 1. Add it in your root build.gradle at the end of repositories:
 ```
 	allprojects {
@@ -44,7 +50,7 @@ Step 1. Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 ```
 	dependencies {
-	        compile 'com.github.pqpo:SmartCropper:v1.2.4'
+	        compile 'com.github.pqpo:SmartCropper:v1.2.3'
 	}
 ```
 
