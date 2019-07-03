@@ -52,8 +52,8 @@ find_library(z-lib
 # build script, prebuilt third-party libraries, or system libraries.
 
 if(${ANDROID_ABI} STREQUAL x86 OR ${ANDROID_ABI} STREQUAL x86_64)
-target_link_libraries(${TARGET} ${z-lib} opencv_imgproc opencv_core ippiw ippicv ittnotify tbb cpufeatures ${log-lib} ${jnigraphics-lib})
+target_link_libraries(${TARGET} opencv_imgproc opencv_core ${z-lib}  ippiw ippicv ittnotify tbb cpufeatures ${log-lib} ${jnigraphics-lib})
 else()
-target_link_libraries(${TARGET} ${z-lib} opencv_imgproc opencv_core tegra_hal tbb cpufeatures ${log-lib} ${jnigraphics-lib})
+target_link_libraries(${TARGET} opencv_imgproc opencv_core ${z-lib} tegra_hal tbb cpufeatures ${log-lib} ${jnigraphics-lib})
 endif()
 

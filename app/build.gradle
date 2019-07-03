@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    implementation project(':smartcropperlib')
+//    implementation project(':smartcropperlib')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
@@ -37,5 +37,5 @@ dependencies {
 
     // For developers using the Android Support Library
     implementation 'pub.devrel:easypermissions:2.0.1'
-//    implementation 'com.github.pqpo:SmartCropper:v2.0.0'
+    implementation 'com.github.pqpo:SmartCropper:v2.1.0'
 }
