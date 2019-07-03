@@ -37,5 +37,5 @@ dependencies {
 
     // For developers using the Android Support Library
     implementation 'pub.devrel:easypermissions:2.0.1'
-    implementation 'com.github.pqpo:SmartCropper:v2.1.0'
+    implementation 'com.github.pqpo:SmartCropper:v2.1.1'
 }

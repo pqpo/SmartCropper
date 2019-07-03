@@ -103,12 +103,29 @@ Bitmap crop = ivCrop.crop();
 |civPointFillColor|color|锚点内部区域填充颜色|
 |civPointFillAlpha|integer|锚点内部区域填充颜色透明度|
 
+## 优化智能选区算法(V2.1.1+)
+使用机器学习算法代理 Canny 算法，提高识别率. 基于 TensorFlow 的 HED 网络。
+感谢：https://github.com/fengjian0106/hed-tutorial-for-document-scanning
+
+1. build.gradle 添加如下代码，不压缩模型：
+```gradle
+aaptOptions {
+    noCompress "tflite"
+    noCompress "lite"
+}
+```
+2. 在合适的地方初始化(比如在 Application.onCreate)：
+```java
+SmartCropper.buildImageDetector(this);
+```
+
+
 ## Features
 
 - [x] 优化点排序算法
 - [x] CropImageView 选区放大镜效果
 - [x] CropImageView xml属性配置
-- [ ] 优化智能选区算法
+- [x] 优化智能选区算法
 - [ ] 欢迎提 ISSUE
 
 ---

@@ -83,15 +83,32 @@ It will identify the border by native(c/c++), and show Image.
 ### 3. Crop the image：
 
 ```java  
-Bitmap crop = ivCrop.crop();  
-```  
+Bitmap crop = ivCrop.crop();
+```
+
+
+### Optimization of intelligent selection algorithm:
+
+Tensorflow HED Net instant of Canny:
+
+1. build.gradle ：
+```gradle
+aaptOptions {
+    noCompress "tflite"
+    noCompress "lite"
+}
+```
+2. Application.onCreate：
+```java
+SmartCropper.buildImageDetector(this);
+```
 
 ## Features
 
 - [x] Optimization point sorting algorithm
 - [x] CropImageView selection magnifying effect
 - [x] CropImageView xml settings
-- [ ] Optimization of intelligent selection algorithm
+- [x] Optimization of intelligent selection algorithm
 - [ ] Please submit ISSUEs
 
 ---
