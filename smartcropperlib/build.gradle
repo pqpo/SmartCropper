@@ -38,4 +38,5 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
 }

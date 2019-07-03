@@ -25,8 +25,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import java.util.Arrays;
-
 import me.pqpo.smartcropperlib.R;
 import me.pqpo.smartcropperlib.SmartCropper;
 import me.pqpo.smartcropperlib.utils.CropUtils;

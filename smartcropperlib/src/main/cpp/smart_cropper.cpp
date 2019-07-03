@@ -26,7 +26,7 @@ static jobject createJavaPoint(JNIEnv *env, Point point_) {
     return env -> NewObject(gPointInfo.jClassPoint, gPointInfo.jMethodInit, point_.x, point_.y);
 }
 
-static void native_scan(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArray outPoint_) {
+static void native_scan(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArray outPoint_, jboolean canny) {
     if (env -> GetArrayLength(outPoint_) != 4) {
         return;
     }
@@ -34,7 +34,7 @@ static void native_scan(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArra
     bitmap_to_mat(env, srcBitmap, srcBitmapMat);
     Mat bgrData(srcBitmapMat.rows, srcBitmapMat.cols, CV_8UC3);
     cvtColor(srcBitmapMat, bgrData, CV_RGBA2BGR);
-    scanner::Scanner docScanner(bgrData);
+    scanner::Scanner docScanner(bgrData, canny);
     std::vector<Point> scanPoints = docScanner.scanPoint();
     if (scanPoints.size() == 4) {
         for (int i = 0; i < 4; ++i) {
@@ -98,7 +98,7 @@ static JNINativeMethod gMethods[] = {
 
         {
                 "nativeScan",
-                "(Landroid/graphics/Bitmap;[Landroid/graphics/Point;)V",
+                "(Landroid/graphics/Bitmap;[Landroid/graphics/Point;Z)V",
                 (void*)native_scan
         },
 

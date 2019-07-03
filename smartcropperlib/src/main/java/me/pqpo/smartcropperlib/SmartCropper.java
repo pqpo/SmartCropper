@@ -1,9 +1,10 @@
 package me.pqpo.smartcropperlib;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 import me.pqpo.smartcropperlib.utils.CropUtils;
 
@@ -12,6 +13,20 @@ import me.pqpo.smartcropperlib.utils.CropUtils;
  */
 
 public class SmartCropper {
+
+    private static ImageDetector sImageDetector = null;
+
+    public static void buildImageDetector(Context context) {
+        SmartCropper.buildImageDetector(context, null);
+    }
+
+    public static void buildImageDetector(Context context, String modelFile) {
+        try {
+            sImageDetector = new ImageDetector(context, modelFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      *  输入图片扫描边框顶点
@@ -22,8 +37,14 @@ public class SmartCropper {
         if (srcBmp == null) {
             throw new IllegalArgumentException("srcBmp cannot be null");
         }
+        if (sImageDetector != null) {
+            Bitmap bitmap = sImageDetector.detectImage(srcBmp);
+            if (bitmap != null) {
+                srcBmp = Bitmap.createScaledBitmap(bitmap, srcBmp.getWidth(), srcBmp.getHeight(), false);
+            }
+        }
         Point[] outPoints = new Point[4];
-        nativeScan(srcBmp, outPoints);
+        nativeScan(srcBmp, outPoints, sImageDetector == null);
         return outPoints;
     }
 
@@ -57,7 +78,7 @@ public class SmartCropper {
 
 
 
-    private static native void nativeScan(Bitmap srcBitmap, Point[] outPoints);
+    private static native void nativeScan(Bitmap srcBitmap, Point[] outPoints, boolean canny);
 
     private static native void nativeCrop(Bitmap srcBitmap, Point[] points, Bitmap outBitmap);
 

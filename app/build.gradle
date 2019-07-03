@@ -21,6 +21,10 @@ android {
     lintOptions {
         abortOnError false
     }
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
 }
 
 dependencies {

@@ -12,8 +12,9 @@ static bool sortByArea(const vector<Point> &v1, const vector<Point> &v2) {
     return v1Area > v2Area;
 }
 
-Scanner::Scanner(cv::Mat& bitmap) {
+Scanner::Scanner(cv::Mat& bitmap, bool canny) {
     srcBitmap = bitmap;
+    Scanner::canny = canny;
 }
 
 Scanner::~Scanner() {
@@ -138,6 +139,9 @@ Mat Scanner::resizeImage() {
 Mat Scanner::preprocessedImage(Mat &image, int cannyValue, int blurValue) {
     Mat grayMat;
     cvtColor(image, grayMat, CV_BGR2GRAY);
+    if (!canny) {
+        return grayMat;
+    }
     if (isHisEqual){
         equalizeHist(grayMat, grayMat);
     }
@@ -147,7 +151,7 @@ Mat Scanner::preprocessedImage(Mat &image, int cannyValue, int blurValue) {
     Canny(blurMat, cannyMat, 50, cannyValue, 3);
     Mat thresholdMat;
     threshold(cannyMat, thresholdMat, 0, 255, CV_THRESH_OTSU);
-    return cannyMat;
+    return thresholdMat;
 }
 
 vector<Point> Scanner::selectPoints(vector<Point> points) {

@@ -13,12 +13,14 @@ namespace scanner{
     public:
         int resizeThreshold = 500;
 
-        Scanner(cv::Mat& bitmap);
+        Scanner(cv::Mat& bitmap, bool canny);
         virtual ~Scanner();
         std::vector<cv::Point> scanPoint();
     private:
         cv::Mat srcBitmap;
         float resizeScale = 1.0f;
+
+        bool canny = true;
 
         bool isHisEqual = false;
 
