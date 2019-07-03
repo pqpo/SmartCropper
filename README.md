@@ -135,7 +135,7 @@ Bitmap crop = ivCrop.crop();
 
 - qq群: Github 开源交流群
 
-<img src="art/qq_qr.jpg" width="200">
+<img src="art/qq_qr.jpeg" width="200">
 
 License
 -------
