@@ -43,12 +43,17 @@ find_library( # Sets the name of the path variable.
 find_library(jnigraphics-lib
              jnigraphics)
 
+find_library(z-lib
+             z)
+
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-file(GLOB OPENCV_LIB_SOURCE "${OPENCV_LIB_DIR}/lib*.a")
-file(GLOB OPENCV_3RD_LIB_SOURCE "${OPENCV_3RD_LIB_DIR}/lib*.a")
+if(${ANDROID_ABI} STREQUAL x86 OR ${ANDROID_ABI} STREQUAL x86_64)
+target_link_libraries(${TARGET} ${z-lib} opencv_imgproc opencv_core ippiw ippicv ittnotify tbb cpufeatures ${log-lib} ${jnigraphics-lib})
+else()
+target_link_libraries(${TARGET} ${z-lib} opencv_imgproc opencv_core tegra_hal tbb cpufeatures ${log-lib} ${jnigraphics-lib})
+endif()
 
-target_link_libraries(${TARGET} opencv_imgproc opencv_core tegra_hal tbb cpufeatures ${log-lib} ${jnigraphics-lib})
