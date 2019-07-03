@@ -133,6 +133,10 @@ Bitmap crop = ivCrop.crop();
 
 <img src="art/qrcode_for_gh.jpg" width="200">
 
+- qq群: Github 开源交流群
+
+<img src="art/qq_qr.jpg" width="200">
+
 License
 -------
 
