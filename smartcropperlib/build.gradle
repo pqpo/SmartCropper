@@ -6,16 +6,15 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 9
-        versionName "1.2.5"
+        versionName "2.0.0"
 
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -frtti -fexceptions -lz"
-                abiFilters 'armeabi-v7a', "arm64-v8a", 'x86'
-                arguments '-DANDROID_STL=gnustl_shared'
+                abiFilters 'armeabi-v7a', "arm64-v8a", 'x86', 'x86_64'
             }
         }
 
@@ -38,5 +37,5 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+    implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 }

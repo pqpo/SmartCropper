@@ -6,6 +6,8 @@
 #include <android_utils.h>
 #include <Scanner.h>
 
+using namespace std;
+
 static const char* const kClassDocScanner = "me/pqpo/smartcropperlib/SmartCropper";
 
 static struct {
@@ -33,7 +35,7 @@ static void native_scan(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArra
     Mat srcBitmapMat;
     bitmap_to_mat(env, srcBitmap, srcBitmapMat);
     Mat bgrData(srcBitmapMat.rows, srcBitmapMat.cols, CV_8UC3);
-    cvtColor(srcBitmapMat, bgrData, CV_RGBA2BGR);
+    cvtColor(srcBitmapMat, bgrData, COLOR_RGBA2BGR);
     scanner::Scanner docScanner(bgrData, canny);
     std::vector<Point> scanPoints = docScanner.scanPoint();
     if (scanPoints.size() == 4) {
@@ -75,8 +77,8 @@ static void native_crop(JNIEnv *env, jclass type, jobject srcBitmap, jobjectArra
     int newWidth = outBitmapInfo.width;
     dstBitmapMat = Mat::zeros(newHeight, newWidth, srcBitmapMat.type());
 
-    vector<Point2f> srcTriangle;
-    vector<Point2f> dstTriangle;
+    std::vector<Point2f> srcTriangle;
+    std::vector<Point2f> dstTriangle;
 
     srcTriangle.push_back(Point2f(leftTop.x, leftTop.y));
     srcTriangle.push_back(Point2f(rightTop.x, rightTop.y));

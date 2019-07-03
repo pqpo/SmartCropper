@@ -5,6 +5,7 @@
 
 using namespace scanner;
 using namespace cv;
+using namespace std;
 
 static bool sortByArea(const vector<Point> &v1, const vector<Point> &v2) {
     double v1Area = fabs(contourArea(Mat(v1)));
@@ -138,7 +139,7 @@ Mat Scanner::resizeImage() {
 
 Mat Scanner::preprocessedImage(Mat &image, int cannyValue, int blurValue) {
     Mat grayMat;
-    cvtColor(image, grayMat, CV_BGR2GRAY);
+    cvtColor(image, grayMat, COLOR_BGR2GRAY);
     if (!canny) {
         return grayMat;
     }
@@ -150,7 +151,7 @@ Mat Scanner::preprocessedImage(Mat &image, int cannyValue, int blurValue) {
     Mat cannyMat;
     Canny(blurMat, cannyMat, 50, cannyValue, 3);
     Mat thresholdMat;
-    threshold(cannyMat, thresholdMat, 0, 255, CV_THRESH_OTSU);
+    threshold(cannyMat, thresholdMat, 0, 255, THRESH_OTSU);
     return thresholdMat;
 }
 
