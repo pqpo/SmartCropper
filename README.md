@@ -29,13 +29,23 @@
 ![](art/smartcropper_photo.gif)
 ![](art/smartcropper_album_1.gif)
 
+## 优化智能选区算法(V2.1.1+)
+使用机器学习算法代理 Canny 算法，提高识别率(基于 TensorFlow 的 HED 网络).
+感谢：https://github.com/fengjian0106/hed-tutorial-for-document-scanning
+
+1. build.gradle 添加如下代码，不压缩模型：
+```gradle
+aaptOptions {
+    noCompress "tflite"
+    noCompress "lite"
+}
+```
+2. 在合适的地方初始化(比如在 Application.onCreate)：
+```java
+SmartCropper.buildImageDetector(this);
+```
+
 ## 接入
-
-### 1.2.4 及以上版本需要通过aar包的形式引入：
-
-下载地址：https://github.com/pqpo/SmartCropper/releases
-
-### 1.2.3 及以下版本：
 
 1.根目录下的 build.gradle 添加：
 ```gradle
@@ -49,7 +59,7 @@ allprojects {
 2.添加依赖
 ```gradle
 dependencies {
-	  compile 'com.github.pqpo:SmartCropper:v1.2.3'
+	  compile 'com.github.pqpo:SmartCropper:v2.1.1'
 }
 ```
 
@@ -102,23 +112,6 @@ Bitmap crop = ivCrop.crop();
 |civGuideLineColor|color|辅助线颜色|
 |civPointFillColor|color|锚点内部区域填充颜色|
 |civPointFillAlpha|integer|锚点内部区域填充颜色透明度|
-
-## 优化智能选区算法(V2.1.1+)
-使用机器学习算法代理 Canny 算法，提高识别率. 基于 TensorFlow 的 HED 网络。
-感谢：https://github.com/fengjian0106/hed-tutorial-for-document-scanning
-
-1. build.gradle 添加如下代码，不压缩模型：
-```gradle
-aaptOptions {
-    noCompress "tflite"
-    noCompress "lite"
-}
-```
-2. 在合适的地方初始化(比如在 Application.onCreate)：
-```java
-SmartCropper.buildImageDetector(this);
-```
-
 
 ## Features
 
