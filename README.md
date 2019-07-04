@@ -59,7 +59,7 @@ allprojects {
 2.添加依赖
 ```gradle
 dependencies {
-	  compile 'com.github.pqpo:SmartCropper:v2.1.1'
+	  compile 'com.github.pqpo:SmartCropper:v2.1.3'
 }
 ```
 
