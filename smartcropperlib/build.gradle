@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 9
-        versionName "2.1.1"
+        versionName "2.1.2"
 
         externalNativeBuild {
             cmake {
@@ -36,6 +36,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.tensorflow:tensorflow-lite:1.13.1'
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'org.tensorflow:tensorflow-lite:1.13.1'
 }
