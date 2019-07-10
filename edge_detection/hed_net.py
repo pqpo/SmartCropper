@@ -298,6 +298,10 @@ def mobilenet_v2_func_blocks(is_training):
             net = projection_conv2d(net, pointwise_conv_filters, stride=1)
 
             if stride == 1:
+                # print('----------------- test, net.get_shape().as_list()[3] = %r' % net.get_shape().as_list()[3])
+                # print('----------------- test, inputs.get_shape().as_list()[3] = %r' % inputs.get_shape().as_list()[3])
+                # 如果 net.get_shape().as_list()[3] != inputs.get_shape().as_list()[3]
+                # 借助一个 1x1 的卷积让他们的 channels 相等，然后再相加
                 if net.get_shape().as_list()[3] != inputs.get_shape().as_list()[3]:
                     inputs = _1x1_conv2d(inputs, net.get_shape().as_list()[3], stride=1)
 
@@ -310,7 +314,6 @@ def mobilenet_v2_func_blocks(is_training):
     func_blocks = {'conv2d': conv2d,
                    'inverted_residual_block': inverted_residual_block,
                    'avg_pool2d': avg_pool2d,
-                   'filter_initializer': filter_initializer,
-                   'activation_func': activation_func}
+                   'filter_initializer': filter_initializer, 'activation_func': activation_func}
 
     return func_blocks

@@ -11,11 +11,11 @@ import os
 
 from tensorflow import flags
 
-flags.DEFINE_string('input_img', 'test_image/test2.png',
+flags.DEFINE_string('input_img', 'test_image/test2.jpg',
                     'Image path to run hed, must be jpg image.')
-flags.DEFINE_string('checkpoint_dir', './finetuning_model',
+flags.DEFINE_string('checkpoint_dir', './checkpoint',
                     'Checkpoint directory.')
-flags.DEFINE_string('output_img', 'test_image/test2_o.jpg',
+flags.DEFINE_string('output_img', 'test_image/result.jpg',
                     'Output image path.')
 flags.DEFINE_float('output_threshold', 0.0, 'output threshold, default: 0.0')
 

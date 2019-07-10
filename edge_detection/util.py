@@ -7,7 +7,6 @@ from __future__ import print_function
 
 import scipy.misc
 import numpy as np
-import shutil
 from skimage import color
 
 
@@ -17,14 +16,16 @@ def save_img(out_path, img):
 
 
 def load_sample_from_csv(csv_file):
-    samples = []
+    images = []
+    annotations = []
     with open(csv_file, 'r') as f:
         for line in f.readlines():
             a_list = line.split(', ')
             image_l = a_list[0]
             annotation_l = a_list[1].replace('\n', '')
-            samples.append((image_l, annotation_l))
-    return samples
+            images.append(image_l)
+            annotations.append(annotation_l)
+    return images, annotations
 
 
 def threshold(ann_path, hold):
@@ -36,6 +37,6 @@ def threshold(ann_path, hold):
 
 
 if __name__ == '__main__':
-    ann_file = './test_image/annotation.png'
+    ann_file = './test_image/annotation_IMG_20190704_143127.png'
     threshold(ann_file, 0.5)
 
