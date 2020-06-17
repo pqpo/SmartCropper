@@ -4,9 +4,6 @@ import android.app.Application;
 
 import me.pqpo.smartcropperlib.SmartCropper;
 
-/**
- * Created by qiulinmin@u51.com on 2019/7/3.
- */
 public class App extends Application {
 
     @Override
