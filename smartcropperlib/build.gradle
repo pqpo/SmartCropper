@@ -3,13 +3,13 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.pqpo'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 9
-        versionName "2.1.3"
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 10
+        versionName "2.1.4"
 
         externalNativeBuild {
             cmake {
