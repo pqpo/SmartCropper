@@ -33,27 +33,15 @@ add_library(${TARGET} SHARED ${DIR_LIB_SOURCE})
 # you want to add. CMake verifies that the library exists before
 # completing its build.
 
-find_library( # Sets the name of the path variable.
-              log-lib
-
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log)
-
-find_library(jnigraphics-lib
-             jnigraphics)
-
-find_library(z-lib
-             z)
-
+target_link_libraries(${TARGET} log jnigraphics z)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
 if(${ANDROID_ABI} STREQUAL x86 OR ${ANDROID_ABI} STREQUAL x86_64)
-target_link_libraries(${TARGET} opencv_imgproc opencv_core ${z-lib}  ippiw ippicv ittnotify tbb cpufeatures ${log-lib} ${jnigraphics-lib})
+target_link_libraries(${TARGET} opencv_imgproc opencv_core ippiw ippicv ittnotify tbb cpufeatures)
 else()
-target_link_libraries(${TARGET} opencv_imgproc opencv_core ${z-lib} tegra_hal tbb cpufeatures ${log-lib} ${jnigraphics-lib})
+target_link_libraries(${TARGET} opencv_imgproc opencv_core tegra_hal tbb cpufeatures)
 endif()
 
