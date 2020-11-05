@@ -2,6 +2,8 @@
 
 ## [English](README_EN.md) | 中文
 
+目前优化了一套更高识别率的模型和算法，有意向合作的请联系邮箱：pqponet@gmail.com
+
 简单易用的智能图片裁剪库，适用于身份证，名片，文档等照片的裁剪。 如果觉得还不错，欢迎 star，fork。
 
 你也可以关注我的另一个库 [SmartCamera](https://github.com/pqpo/SmartCamera)： SmartCamera 是一个 Android 相机拓展库，能够实时采集并且识别相机内物体边框是否吻合指定区域。
