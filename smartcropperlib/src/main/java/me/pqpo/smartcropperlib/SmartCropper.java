@@ -61,6 +61,26 @@ public class SmartCropper {
         if (cropPoints.length != 4) {
             throw new IllegalArgumentException("The length of cropPoints must be 4 , and sort by leftTop, rightTop, rightBottom, leftBottom");
         }
+
+        //纠正4个点的位置，将距离(0,0)最近的点作为cropPoints[0]
+        double minDistance = Integer.MAX_VALUE;
+        int index = -1;
+        int length = cropPoints.length;
+        for (int i = 0;i < length;i++) {
+            double distance2 = CropUtils.getPointsDistance(cropPoints[i],new Point(0,0));
+            if(minDistance > distance2){
+                minDistance = distance2;
+                index = i;
+            }
+        }
+        if(index > 0){
+            Point[] resultCropPoint = new Point[length];
+            for (int i = 0;i<cropPoints.length;i++) {
+                resultCropPoint[i] = cropPoints[(index + i) >= length ? (index+i) - length : (index+i)];
+            }
+            cropPoints = resultCropPoint.clone();
+        }
+
         Point leftTop = cropPoints[0];
         Point rightTop = cropPoints[1];
         Point rightBottom = cropPoints[2];
