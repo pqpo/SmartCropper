@@ -1,0 +1,3 @@
+/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/RelWithDebInfo/2749154v/x86/CMakeFiles/smart_cropper.dir
+/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/RelWithDebInfo/2749154v/x86/CMakeFiles/edit_cache.dir
+/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/RelWithDebInfo/2749154v/x86/CMakeFiles/rebuild_cache.dir

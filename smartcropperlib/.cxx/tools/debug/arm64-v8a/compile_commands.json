@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/5p3o6g16/arm64-v8a",
+  "command": "/Users/tuannguyen/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --sysroot=/Users/tuannguyen/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dsmart_cropper_EXPORTS -I/Users/tuannguyen/SmartCropper/smartcropperlib/opencv/include -I/Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++11 -frtti -fexceptions -fno-limit-debug-info  -fPIC -o CMakeFiles/smart_cropper.dir/src/main/cpp/Scanner.cpp.o -c /Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/Scanner.cpp",
+  "file": "/Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/Scanner.cpp"
+},
+{
+  "directory": "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/5p3o6g16/arm64-v8a",
+  "command": "/Users/tuannguyen/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --sysroot=/Users/tuannguyen/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dsmart_cropper_EXPORTS -I/Users/tuannguyen/SmartCropper/smartcropperlib/opencv/include -I/Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++11 -frtti -fexceptions -fno-limit-debug-info  -fPIC -o CMakeFiles/smart_cropper.dir/src/main/cpp/android_utils.cpp.o -c /Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/android_utils.cpp",
+  "file": "/Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/android_utils.cpp"
+},
+{
+  "directory": "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/5p3o6g16/arm64-v8a",
+  "command": "/Users/tuannguyen/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --sysroot=/Users/tuannguyen/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dsmart_cropper_EXPORTS -I/Users/tuannguyen/SmartCropper/smartcropperlib/opencv/include -I/Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++11 -frtti -fexceptions -fno-limit-debug-info  -fPIC -o CMakeFiles/smart_cropper.dir/src/main/cpp/smart_cropper.cpp.o -c /Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/smart_cropper.cpp",
+  "file": "/Users/tuannguyen/SmartCropper/smartcropperlib/src/main/cpp/smart_cropper.cpp"
+}
+]

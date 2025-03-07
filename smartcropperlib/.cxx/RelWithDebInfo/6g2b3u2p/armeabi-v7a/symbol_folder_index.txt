@@ -1,0 +1,1 @@
+/Users/tuannguyen/SmartCropper/smartcropperlib/build/intermediates/cxx/RelWithDebInfo/6g2b3u2p/obj/armeabi-v7a

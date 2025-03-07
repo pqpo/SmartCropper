@@ -6,18 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import me.pqpo.smartcropperlib.SmartCropper;
 import me.pqpo.smartcropperlib.view.CropImageView;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -128,9 +127,7 @@ public class CropActivity extends AppCompatActivity implements EasyPermissions.P
         if (mFromAlbum) {
             Intent selectIntent = new Intent(Intent.ACTION_PICK);
             selectIntent.setType("image/*");
-            if (selectIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(selectIntent, REQUEST_CODE_SELECT_ALBUM);
-            }
+            startActivityForResult(selectIntent, REQUEST_CODE_SELECT_ALBUM);
         } else {
             Intent startCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             Uri uri;
@@ -140,9 +137,7 @@ public class CropActivity extends AppCompatActivity implements EasyPermissions.P
                 uri = Uri.fromFile(tempFile);
             }
             startCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            if (startCameraIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(startCameraIntent, REQUEST_CODE_TAKE_PHOTO);
-            }
+            startActivityForResult(startCameraIntent, REQUEST_CODE_TAKE_PHOTO);
         }
     }
 

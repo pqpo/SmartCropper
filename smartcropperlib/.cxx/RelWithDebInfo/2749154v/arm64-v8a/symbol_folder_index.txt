@@ -1,0 +1,1 @@
+/Users/tuannguyen/SmartCropper/smartcropperlib/build/intermediates/cxx/RelWithDebInfo/2749154v/obj/arm64-v8a

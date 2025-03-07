@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/Users/tuannguyen/SmartCropper/smartcropperlib/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/tuannguyen/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/26c6g3y4/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/tuannguyen/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/26c6g3y4/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "smart_cropper::@6890427a1f51a3e7e1df": {
+      "artifactName": "smart_cropper",
+      "abi": "x86",
+      "output": "/Users/tuannguyen/SmartCropper/smartcropperlib/build/intermediates/cxx/Debug/26c6g3y4/obj/x86/libsmart_cropper.so",
+      "runtimeFiles": []
+    }
+  }
+}

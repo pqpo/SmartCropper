@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 34
     defaultConfig {
         applicationId "me.pqpo.smartcropper"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 34
         versionCode 2
         versionName "1.1"
         ndk {
@@ -25,17 +25,19 @@ android {
         noCompress "tflite"
         noCompress "lite"
     }
+    namespace 'me.pqpo.smartcropper'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 }
 
 dependencies {
     implementation project(':smartcropperlib')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    // For developers using AndroidX in their applications
-    //implementation 'pub.devrel:easypermissions:3.0.0'
-
-    // For developers using the Android Support Library
-    implementation 'pub.devrel:easypermissions:2.0.1'
-//    api 'com.github.pqpo:SmartCropper:v2.1.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.12.0'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation 'org.tensorflow:tensorflow-lite:2.17.0'
 }

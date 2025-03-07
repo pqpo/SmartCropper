@@ -1,0 +1,21 @@
+                        -H/Users/tuannguyen/SmartCropper/smartcropperlib
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=19
+-DANDROID_PLATFORM=android-19
+-DANDROID_ABI=x86_64
+-DCMAKE_ANDROID_ARCH_ABI=x86_64
+-DANDROID_NDK=/Users/tuannguyen/Library/Android/sdk/ndk/25.1.8937393
+-DCMAKE_ANDROID_NDK=/Users/tuannguyen/Library/Android/sdk/ndk/25.1.8937393
+-DCMAKE_TOOLCHAIN_FILE=/Users/tuannguyen/Library/Android/sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/Users/tuannguyen/Library/Android/sdk/cmake/3.22.1/bin/ninja
+-DCMAKE_CXX_FLAGS=-std=c++11 -frtti -fexceptions
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/Users/tuannguyen/SmartCropper/smartcropperlib/build/intermediates/cxx/RelWithDebInfo/6g2b3u2p/obj/x86_64
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/Users/tuannguyen/SmartCropper/smartcropperlib/build/intermediates/cxx/RelWithDebInfo/6g2b3u2p/obj/x86_64
+-DCMAKE_BUILD_TYPE=RelWithDebInfo
+-B/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/RelWithDebInfo/6g2b3u2p/x86_64
+-GNinja
+-DANDROID_TOOLCHAIN=clang
+-DANDROID_STL=c++_static
+                        Build command args: []
+                        Version: 2

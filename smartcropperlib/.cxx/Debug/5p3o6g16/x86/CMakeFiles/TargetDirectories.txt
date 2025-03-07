@@ -1,0 +1,3 @@
+/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/5p3o6g16/x86/CMakeFiles/smart_cropper.dir
+/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/5p3o6g16/x86/CMakeFiles/edit_cache.dir
+/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/Debug/5p3o6g16/x86/CMakeFiles/rebuild_cache.dir

@@ -1,15 +1,26 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.pqpo'
 
 android {
-    compileSdkVersion 29
-
+    compileSdk 34
+    namespace 'me.pqpo.smartcropperlib'
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        // Make sure TensorFlow classes aren't excluded
+    }
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 29
+        minSdkVersion 21
+        targetSdkVersion 34
         versionCode 10
         versionName "2.1.4"
+        multiDexEnabled true
 
         externalNativeBuild {
             cmake {
@@ -18,11 +29,15 @@ android {
                 arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_STL=c++_static"
             }
         }
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
 
     }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -36,7 +51,19 @@ android {
     }
 }
 
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'org.tensorflow:tensorflow-lite:1.13.1'
+    api 'org.tensorflow:tensorflow-lite:2.17.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
+
+// Thêm task để build AAR
+task buildAAR(type: GradleBuild) {
+    tasks = ['clean', 'assembleRelease']
 }

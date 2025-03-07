@@ -35,6 +35,8 @@ namespace scanner{
         std::vector<cv::Point> sortPointClockwise(std::vector<cv::Point> vector);
 
         long long pointSideLine(cv::Point& lineP1, cv::Point& lineP2, cv::Point& point);
+
+        bool isValidQuadrangle(const std::vector<cv::Point>& points);
     };
 
 }

@@ -1,0 +1,38 @@
+{
+  "buildFiles": [
+    "/Users/tuannguyen/SmartCropper/smartcropperlib/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/tuannguyen/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/RelWithDebInfo/6g2b3u2p/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/tuannguyen/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/tuannguyen/SmartCropper/smartcropperlib/.cxx/RelWithDebInfo/6g2b3u2p/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "smart_cropper::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "smart_cropper",
+      "output": "/Users/tuannguyen/SmartCropper/smartcropperlib/build/intermediates/cxx/RelWithDebInfo/6g2b3u2p/obj/armeabi-v7a/libsmart_cropper.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/Users/tuannguyen/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/Users/tuannguyen/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

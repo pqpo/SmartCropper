@@ -25,3 +25,5 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class me.pqpo.smartcropperlib.**{*;}
+-keep class org.tensorflow.** { *; }
+-dontwarn org.tensorflow.**
