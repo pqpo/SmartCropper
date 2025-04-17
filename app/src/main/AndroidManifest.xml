@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="me.pqpo.smartcropper">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:name=".App"
@@ -14,7 +13,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

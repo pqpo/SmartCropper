@@ -1,12 +1,15 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.pqpo'
+plugins {
+    id 'com.android.library'
+    //id 'maven-publish'
+}
 
 android {
+    namespace="me.pqpo.smartcropperlib"
+    ndkVersion '25.1.8937393'
     compileSdkVersion 29
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 10
         versionName "2.1.4"
@@ -40,3 +43,20 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api 'org.tensorflow:tensorflow-lite:1.13.1'
 }
+
+/*
+publishing {
+    publications {
+        release(MavenPublication) {
+            //from components.release
+            groupId = 'com.github.pqpo'
+            artifactId = 'smartcropperlib'
+            version = '2.1.4'
+        }
+    }
+    repositories {
+        maven {
+            url "file://${buildDir}/repo"
+        }
+    }
+}*/
