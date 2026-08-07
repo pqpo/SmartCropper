@@ -2,6 +2,8 @@
 
 ## English | [中文](README.md)
 
+I’d like to introduce my latest open-source project: [Pragma](https://github.com/pqpo/pragma): Turn the way you work with AI into reusable assets.If you find it interesting or useful, I’d really ap
+
 A library for cropping image in a smart way that can identify the border and correct the cropped image. Applicable to ID cards, business cards, documents and other photos of the crop. If you like, welcome star, fork or follow me.
 
 You can also follow my other library [SmartCamera](https://github.com/pqpo/SmartCamera): SmartCamera is an Android camera extension library，provides a scanning module that can recognizes whether the object's border inside the camera matches the area in real time.
