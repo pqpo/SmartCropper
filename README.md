@@ -2,6 +2,8 @@
 
 ## [English](README_EN.md) | 中文
 
+推荐一下我的最新开源项目：[Pragma](https://github.com/pqpo/pragma)  把你的 AI 工作方式，沉淀成可以复用的资产。你觉得有意思或者对你有帮助的话求个 star ，有兴趣的也欢迎提交 pr
+
 ***目前优化了一套更高识别率的模型和算法，有意向合作的请联系邮箱：pqponet@gmail.com***
 
 简单易用的智能图片裁剪库，适用于身份证，名片，文档等照片的裁剪。 如果觉得还不错，欢迎 star，fork。
